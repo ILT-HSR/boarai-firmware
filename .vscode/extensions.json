@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "ms-iot.vscode-ros",
+    "xaver.clang-format",
+    "ms-vscode.cpptools",
+    "ms-python.python",
+    "ms-vscode-remote.vscode-remote-extensionpack",
+    "tht13.rst-vscode",
+    "twxs.cmake"
+  ]
+}
