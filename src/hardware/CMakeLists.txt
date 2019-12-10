@@ -20,6 +20,7 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/conanfile.txt")
   include("conan")
   conan_check(REQUIRED)
   conan_add_remote(NAME bincrafters URL "https://api.bintray.com/conan/bincrafters/public-conan")
+  conan_add_remote(NAME joakimono URL "https://api.bintray.com/conan/joakimono/conan")
   conan_cmake_run(CONANFILE "conanfile.txt"
     BASIC_SETUP
     CMAKE_TARGETS
@@ -41,7 +42,45 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-### Node/Library Configuration
+### libmodbus C++ interface
+
+add_library("modbuscpp" SHARED
+  "src/modbuscpp/client.cpp"
+  "src/modbuscpp/connection.cpp"
+  "src/modbuscpp/context.cpp"
+  "src/modbuscpp/error.cpp"
+  "src/modbuscpp/rtu_context.cpp"
+  "src/modbuscpp/tcp_context.cpp"
+)
+
+set(MODBUS_CPP_HEADERS
+  "include/modbuscpp/address.hpp"
+  "include/modbuscpp/client.hpp"
+  "include/modbuscpp/connection.hpp"
+  "include/modbuscpp/context.hpp"
+  "include/modbuscpp/error.hpp"
+  "include/modbuscpp/modbuscpp.hpp"
+  "include/modbuscpp/rtu_context.hpp"
+  "include/modbuscpp/tcp_context.hpp"
+)
+
+set_target_properties("modbuscpp" PROPERTIES PUBLIC_HEADER "${MODBUS_CPP_HEADERS}")
+
+target_include_directories("modbuscpp" PUBLIC SYSTEM
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+)
+
+target_link_libraries("modbuscpp"
+  "CONAN_PKG::libmodbus"
+)
+
+install(TARGETS "modbuscpp"
+  DESTINATION "lib/${PROJECT_NAME}"
+  PUBLIC_HEADER DESTINATION "include/modbuscpp"
+)
+
+### Main Node Configuration
 
 find_package("rclcpp" REQUIRED)
 find_package("std_msgs" REQUIRED)
@@ -55,8 +94,13 @@ ament_target_dependencies("${PROJECT_NAME}"
   "std_msgs"
 )
 
+target_link_libraries("${PROJECT_NAME}"
+  "modbuscpp"
+)
+
 install(TARGETS "${PROJECT_NAME}"
   DESTINATION "lib/${PROJECT_NAME}"
+
 )
 
 ### Export Ament Package
