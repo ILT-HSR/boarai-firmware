@@ -1,4 +1,8 @@
 {
+  "editor.formatOnSave": true,
+  "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
   "python.autoComplete.extraPaths": [
     "/opt/ros2/ros2bag/lib/python3.8/site-packages",
     "/opt/ros2/rosbag2_transport/lib/python3.8/site-packages",
