@@ -21,6 +21,7 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/conanfile.txt")
   conan_check(REQUIRED)
   conan_add_remote(NAME bincrafters URL "https://api.bintray.com/conan/bincrafters/public-conan")
   conan_add_remote(NAME joakimono URL "https://api.bintray.com/conan/joakimono/conan")
+  conan_add_remote(NAME fmorgner URL "https://api.bintray.com/conan/fmorgner/conan-public")
   conan_cmake_run(CONANFILE "conanfile.txt"
     BASIC_SETUP
     CMAKE_TARGETS
@@ -37,10 +38,12 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   )
 endif()
 
-if(BUILD_TESTING)
-  find_package("ament_lint_auto" REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-endif()
+### Prepare testing infrastructure
+
+enable_testing()
+set(ament_cmake_clang_format_CONFIG_FILE "${PROJECT_SOURCE_DIR}/../../.clang-format")
+find_package("ament_lint_auto" REQUIRED)
+ament_lint_auto_find_test_dependencies()
 
 ### libmodbus C++ interface
 
@@ -75,6 +78,19 @@ target_link_libraries("modbuscpp"
   "CONAN_PKG::libmodbus"
 )
 
+add_executable("modbuscpp_unittests"
+  "test/src/modbuscpp/unittests.cpp"
+)
+
+target_link_libraries("modbuscpp_unittests"
+  "modbuscpp"
+  "CONAN_PKG::CUTE"
+)
+
+add_test(NAME "modbuscpp_unittests"
+  COMMAND "modbuscpp_unittests"
+)
+
 install(TARGETS "modbuscpp"
   DESTINATION "lib/${PROJECT_NAME}"
   PUBLIC_HEADER DESTINATION "include/modbuscpp"
@@ -101,6 +117,13 @@ target_link_libraries("${PROJECT_NAME}"
 install(TARGETS "${PROJECT_NAME}"
   DESTINATION "lib/${PROJECT_NAME}"
 
+)
+
+### Run Unit-Tests
+
+add_custom_target(run_all_tests ALL
+  COMMAND ${CMAKE_CTEST_COMMAND} "--output-on-failure"
+  DEPENDS "modbuscpp_unittests"
 )
 
 ### Export Ament Package
