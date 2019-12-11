@@ -15,6 +15,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 find_package("ament_cmake" REQUIRED)
+find_package("Threads" REQUIRED)
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/conanfile.txt")
   include("conan")
@@ -69,7 +70,7 @@ set(MODBUS_CPP_HEADERS
 
 set_target_properties("modbuscpp" PROPERTIES PUBLIC_HEADER "${MODBUS_CPP_HEADERS}")
 
-target_include_directories("modbuscpp" PUBLIC SYSTEM
+target_include_directories("modbuscpp" PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
 )
@@ -79,12 +80,18 @@ target_link_libraries("modbuscpp"
 )
 
 add_executable("modbuscpp_unittests"
+  "test/src/modbuscpp/test_server.cpp"
   "test/src/modbuscpp/unittests.cpp"
+)
+
+target_include_directories("modbuscpp_unittests" PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/test/include>
 )
 
 target_link_libraries("modbuscpp_unittests"
   "modbuscpp"
   "CONAN_PKG::CUTE"
+  "Threads::Threads"
 )
 
 add_test(NAME "modbuscpp_unittests"

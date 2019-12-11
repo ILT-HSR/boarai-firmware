@@ -69,13 +69,25 @@ auto constexpr operator*(std::variant<SuccessType, std::error_code> & failable) 
 template<typename SuccessType>
 auto constexpr operator*(std::variant<SuccessType, std::error_code> && failable) -> SuccessType &&
 {
-  return std::get<SuccessType>(failable);
+  return std::move(std::get<SuccessType>(failable));
 }
 
 template<typename SuccessType>
 auto constexpr operator*(std::variant<SuccessType, std::error_code> const && failable) -> SuccessType const &&
 {
-  return std::get<SuccessType>(failable);
+  return std::move(std::get<SuccessType>(failable));
+}
+
+template<typename SuccessType>
+auto constexpr operator==(std::error_condition error, std::variant<SuccessType, std::error_code> const & failable) -> bool
+{
+  return std::holds_alternative<std::error_code>(failable) && std::get<std::error_code>(failable) == error;
+}
+
+template<typename SuccessType>
+auto constexpr operator==(std::variant<SuccessType, std::error_code> const & failable, std::error_condition error) -> bool
+{
+  return std::holds_alternative<std::error_code>(failable) && std::get<std::error_code>(failable) == error;
 }
 
 #endif

@@ -114,7 +114,7 @@ namespace modbus
 
   auto context::debug(bool enable) noexcept -> void
   {
-    modbus_set_slave(m_handle.get(), enable);
+    modbus_set_debug(m_handle.get(), enable);
   }
 
   auto context::slave_id(int id) noexcept -> std::error_code
