@@ -6,6 +6,7 @@
     "ms-python.python",
     "ms-vscode-remote.vscode-remote-extensionpack",
     "tht13.rst-vscode",
-    "twxs.cmake"
+    "twxs.cmake",
+    "eamodio.gitlens"
   ]
 }
