@@ -7,7 +7,7 @@
 
 namespace modbus
 {
-  auto constexpr address_upper_bound = 9998;
+  auto constexpr address_upper_bound = 0xffff;
 
   struct address
   {
@@ -31,7 +31,7 @@ namespace modbus
     {
       if (value > address_upper_bound)
       {
-        throw std::invalid_argument{"Address " + std::to_string(value) + " is outside of legal range [0, 9998]"};
+        throw std::invalid_argument{"Address " + std::to_string(value) + " is outside of legal range [0, 65535]"};
       }
       return address{static_cast<std::uint16_t>(value)};
     }
