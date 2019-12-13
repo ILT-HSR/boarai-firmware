@@ -28,7 +28,7 @@ auto test_modbus_tcp_can_connect_if_server_is_listening()
   auto server = test_server{default_mapping_parameters, default_server_port};
   auto runner = std::async(std::launch::async, [&] { server.run_once(); });
 
-  auto context = *modbus::tcp_context::create("127.0.0.1", default_server_port);
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
   auto connection = modbus::connection{std::move(context)};
 
   connection.close();
@@ -37,7 +37,7 @@ auto test_modbus_tcp_can_connect_if_server_is_listening()
 
 auto test_modbus_tcp_connect_throws_if_no_server_is_listening()
 {
-  auto context = *modbus::tcp_context::create("127.0.0.1", default_server_port);
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
   ASSERT_THROWS(modbus::connection{std::move(context)}, std::system_error);
 }
 
@@ -48,7 +48,7 @@ auto test_modbus_tcp_can_read_single_coil()
   auto server = test_server{default_mapping_parameters, default_server_port};
   auto runner = std::async(std::launch::async, [&] { server.run_once(); });
 
-  auto context = *modbus::tcp_context::create("127.0.0.1", default_server_port);
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
   auto connection = modbus::connection{std::move(context)};
   auto client = modbus::client{connection};
 
@@ -62,7 +62,7 @@ auto test_modbus_tcp_can_read_multiple_coils()
   auto server = test_server{default_mapping_parameters, default_server_port};
   auto runner = std::async(std::launch::async, [&] { server.run_once(); });
 
-  auto context = *modbus::tcp_context::create("127.0.0.1", default_server_port);
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
   auto connection = modbus::connection{std::move(context)};
   auto client = modbus::client{connection};
 
@@ -76,7 +76,7 @@ auto test_modbus_tcp_fails_when_trying_to_read_too_many_coils()
   auto server = test_server{default_mapping_parameters, default_server_port};
   auto runner = std::async(std::launch::async, [&] { server.run_once(); });
 
-  auto context = *modbus::tcp_context::create("127.0.0.1", default_server_port);
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
   auto connection = modbus::connection{std::move(context)};
   auto client = modbus::client{connection};
 

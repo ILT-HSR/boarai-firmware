@@ -6,28 +6,33 @@
 
 #include <modbus/modbus-tcp.h>
 
+#include <cstdint>
 #include <system_error>
 
 namespace modbus
 {
-  tcp_context::tcp_context(modbus_t * handle)
-      : context{handle}
+  namespace
+  {
+    auto make_tcp_context(std::string address, std::uint16_t port) -> modbus_t *
+    {
+      auto api_context = modbus_new_tcp(address.c_str(), static_cast<int>(port));
+      if (!api_context)
+      {
+        switch (errno)
+        {
+        case EINVAL:
+          throw std::system_error{make_error_code(modbus_error::invalid_ip_address)};
+        default:
+          throw std::system_error{make_error_code(static_cast<std::errc>(errno))};
+        }
+      }
+      return api_context;
+    }
+  }  // namespace
+
+  tcp_context::tcp_context(std::string slave_address, std::uint16_t port)
+      : context{make_tcp_context(slave_address, port)}
   {
   }
 
-  auto tcp_context::create(std::string node_address, std::uint16_t node_port) -> std::variant<tcp_context, std::error_code>
-  {
-    auto api_context = modbus_new_tcp(node_address.c_str(), static_cast<int>(node_port));
-    if (!api_context)
-    {
-      switch (errno)
-      {
-      case EINVAL:
-        return make_error_code(modbus_error::invalid_ip_address);
-      default:
-        return make_error_code(static_cast<std::errc>(errno));
-      }
-    }
-    return tcp_context{api_context};
-  }
 }  // namespace modbus

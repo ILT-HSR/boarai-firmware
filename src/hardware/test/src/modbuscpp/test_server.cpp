@@ -21,7 +21,7 @@ namespace boarai::hardware::test
   }
 
   test_server::test_server(mapping_parameters mapping_parameters, std::uint16_t port)
-      : m_context{*modbus::tcp_context::create("127.0.0.1", port)}
+      : m_context{modbus::tcp_context{"127.0.0.1", port}}
   {
     auto [coils, discrete_inputs, holding_registers, input_registers] = mapping_parameters;
     auto data_guard = std::lock_guard{m_data_mutex};

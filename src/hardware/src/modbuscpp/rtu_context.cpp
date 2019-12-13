@@ -7,7 +7,7 @@
 #include <modbus/modbus-rtu.h>
 
 #include <chrono>
-
+#include <system_error>
 namespace modbus
 {
   namespace
@@ -39,29 +39,33 @@ namespace modbus
       }
       return static_cast<ModeKind>(mode);
     }
+
+    auto
+    make_rtu_context(std::string node_device, std::uint32_t baud_rate, parity parity, data_bits data_bits, stop_bits stop_bits)
+        -> modbus_t *
+    {
+      auto api_context = modbus_new_rtu(node_device.c_str(),
+                                        static_cast<int>(baud_rate),
+                                        static_cast<char>(parity),
+                                        static_cast<int>(data_bits),
+                                        static_cast<int>(stop_bits));
+
+      if (!api_context)
+      {
+        throw std::system_error{make_error_code(static_cast<std::errc>(errno))};
+      }
+
+      return api_context;
+    }
   }  // namespace
 
-  rtu_context::rtu_context(modbus_t * handle)
-      : context{handle}
+  rtu_context::rtu_context(std::string node_device,
+                           std::uint32_t baud_rate,
+                           parity parity,
+                           data_bits data_bits,
+                           stop_bits stop_bits)
+      : context{make_rtu_context(node_device, baud_rate, parity, data_bits, stop_bits)}
   {
-  }
-
-  auto
-  rtu_context::create(std::string node_device, std::uint32_t baud_rate, parity parity, data_bits data_bits, stop_bits stop_bits)
-      -> std::variant<rtu_context, std::error_code>
-  {
-    auto api_context = modbus_new_rtu(node_device.c_str(),
-                                      static_cast<int>(baud_rate),
-                                      static_cast<char>(parity),
-                                      static_cast<int>(data_bits),
-                                      static_cast<int>(stop_bits));
-
-    if (!api_context)
-    {
-      return make_error_code(static_cast<std::errc>(errno));
-    }
-
-    return rtu_context{api_context};
   }
 
   auto rtu_context::serial_mode(modbus::serial_mode mode) noexcept -> std::error_code

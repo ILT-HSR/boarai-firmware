@@ -49,11 +49,7 @@ namespace modbus
 
   struct rtu_context : context
   {
-    auto static create(std::string node_device,
-                       std::uint32_t baud_rate,
-                       parity parity,
-                       data_bits data_bits,
-                       stop_bits stop_bits) -> std::variant<rtu_context, std::error_code>;
+    rtu_context(std::string node_device, std::uint32_t baud_rate, parity parity, data_bits data_bits, stop_bits stop_bits);
 
     auto serial_mode(serial_mode mode) noexcept -> std::error_code;
 
@@ -66,9 +62,6 @@ namespace modbus
     auto rts_delay(std::chrono::microseconds delay) noexcept -> std::error_code;
 
     auto rts_delay() const noexcept -> std::variant<std::chrono::microseconds, std::error_code>;
-
-  private:
-    explicit rtu_context(modbus_t * handle);
   };
 }  // namespace modbus
 #endif

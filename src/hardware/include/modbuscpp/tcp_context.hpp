@@ -10,9 +10,11 @@
 
 namespace modbus
 {
+  auto constexpr default_modbus_tcp_port = std::uint16_t{502};
+
   struct tcp_context : context
   {
-    auto static create(std::string node_address, std::uint16_t node_port) -> std::variant<tcp_context, std::error_code>;
+    explicit tcp_context(std::string slave_address, std::uint16_t port = default_modbus_tcp_port);
 
   private:
     explicit tcp_context(modbus_t * handle);
