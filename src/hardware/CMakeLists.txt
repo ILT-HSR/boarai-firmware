@@ -101,6 +101,33 @@ install(TARGETS "modbuscpp"
   INCLUDES DESTINATION "include"
 )
 
+### Roboteq Driver Library
+
+add_library("roboteq"
+  "src/roboteq/driver.cpp"
+)
+
+target_include_directories("roboteq" PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries("roboteq"
+  "modbuscpp"
+)
+
+install(DIRECTORY "include/roboteq"
+  DESTINATION "include"
+)
+
+install(TARGETS "roboteq"
+  EXPORT "roboteq_export"
+  LIBRARY DESTINATION "lib"
+  ARCHIVE DESTINATION "lib"
+  RUNTIME DESTINATION "lib"
+  INCLUDES DESTINATION "include"
+)
+
 ### Motor Control Node Configuration
 
 add_library("motor_control" SHARED
@@ -133,5 +160,6 @@ add_custom_target(run_all_tests ALL
 ### Export Ament Package
 
 ament_export_interfaces("modbuscpp_export" HAS_LIBRARY_TARGET)
+ament_export_interfaces("roboteq_export" HAS_LIBRARY_TARGET)
 
 ament_package()
