@@ -46,6 +46,12 @@ set(ament_cmake_clang_format_CONFIG_FILE "${PROJECT_SOURCE_DIR}/../../.clang-for
 find_package("ament_lint_auto" REQUIRED)
 ament_lint_auto_find_test_dependencies()
 
+# ROS2 Dependencies
+
+find_package("rclcpp" REQUIRED)
+find_package("rclcpp_components" REQUIRED)
+find_package("std_msgs" REQUIRED)
+
 ### libmodbus C++ interface
 
 add_library("modbuscpp" SHARED
@@ -95,27 +101,27 @@ install(TARGETS "modbuscpp"
   INCLUDES DESTINATION "include"
 )
 
-### Main Node Configuration
+### Motor Control Node Configuration
 
-find_package("rclcpp" REQUIRED)
-find_package("std_msgs" REQUIRED)
-
-add_executable("${PROJECT_NAME}"
-  "src/hardware.cpp"
+add_library("motor_control" SHARED
+  "src/motor_control.cpp"
 )
 
-ament_target_dependencies("${PROJECT_NAME}"
+ament_target_dependencies("motor_control"
   "rclcpp"
+  "rclcpp_components"
   "std_msgs"
 )
 
-target_link_libraries("${PROJECT_NAME}"
+target_link_libraries("motor_control"
   "modbuscpp"
 )
 
-install(TARGETS "${PROJECT_NAME}"
-  DESTINATION "lib/${PROJECT_NAME}"
+install(TARGETS "motor_control"
+  DESTINATION "lib"
 )
+
+rclcpp_components_register_nodes("motor_control" "boarai::hardware::motor_control")
 
 ### Run Unit-Tests
 
