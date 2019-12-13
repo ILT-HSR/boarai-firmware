@@ -142,7 +142,7 @@ namespace modbus
           {
             auto api_value = std::vector<CAPIWriteType>(this->m_count);
             transform(cbegin(value), cend(value), begin(api_value), [](auto entry) {
-              return static_cast<CAPIWriteType>(entry);
+              return static_cast<CAPIWriteType>(entry.to_ulong());
             });
             return m_setter(api_handle, api_address, this->m_count, api_value.data());
           }
