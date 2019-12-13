@@ -57,27 +57,12 @@ add_library("modbuscpp" SHARED
   "src/modbuscpp/tcp_context.cpp"
 )
 
-set(MODBUS_CPP_HEADERS
-  "include/modbuscpp/address.hpp"
-  "include/modbuscpp/client.hpp"
-  "include/modbuscpp/connection.hpp"
-  "include/modbuscpp/context.hpp"
-  "include/modbuscpp/error.hpp"
-  "include/modbuscpp/modbuscpp.hpp"
-  "include/modbuscpp/rtu_context.hpp"
-  "include/modbuscpp/tcp_context.hpp"
-)
-
-set_target_properties("modbuscpp" PROPERTIES PUBLIC_HEADER "${MODBUS_CPP_HEADERS}")
-
 target_include_directories("modbuscpp" PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries("modbuscpp"
-  "CONAN_PKG::libmodbus"
-)
+target_link_libraries("modbuscpp" "CONAN_PKG::libmodbus")
 
 add_executable("modbuscpp_unittests"
   "test/src/modbuscpp/test_server.cpp"
@@ -98,9 +83,16 @@ add_test(NAME "modbuscpp_unittests"
   COMMAND "modbuscpp_unittests"
 )
 
+install(DIRECTORY "include/modbuscpp"
+  DESTINATION "include"
+)
+
 install(TARGETS "modbuscpp"
-  DESTINATION "lib/${PROJECT_NAME}"
-  PUBLIC_HEADER DESTINATION "include/modbuscpp"
+  EXPORT "modbuscpp_export"
+  LIBRARY DESTINATION "lib"
+  ARCHIVE DESTINATION "lib"
+  RUNTIME DESTINATION "lib"
+  INCLUDES DESTINATION "include"
 )
 
 ### Main Node Configuration
@@ -123,7 +115,6 @@ target_link_libraries("${PROJECT_NAME}"
 
 install(TARGETS "${PROJECT_NAME}"
   DESTINATION "lib/${PROJECT_NAME}"
-
 )
 
 ### Run Unit-Tests
@@ -134,5 +125,7 @@ add_custom_target(run_all_tests ALL
 )
 
 ### Export Ament Package
+
+ament_export_interfaces("modbuscpp_export" HAS_LIBRARY_TARGET)
 
 ament_package()
