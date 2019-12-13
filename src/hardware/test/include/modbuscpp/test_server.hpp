@@ -37,7 +37,7 @@ namespace boarai::hardware::test
 
     ~test_server();
 
-    auto run_once() -> void;
+    auto run() -> void;
 
     auto coil(modbus::address address) const -> bool;
 

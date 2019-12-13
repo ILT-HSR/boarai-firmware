@@ -140,9 +140,22 @@ namespace modbus
           }
           else
           {
+            if (value.size() != this->m_count)
+            {
+              errno = EINVAL;
+              return -1;
+            }
+
             auto api_value = std::vector<CAPIWriteType>(this->m_count);
             transform(cbegin(value), cend(value), begin(api_value), [](auto entry) {
-              return static_cast<CAPIWriteType>(entry.to_ulong());
+              if constexpr (std::is_same_v<typename datum_type::value_type, std::bitset<16>>)
+              {
+                return static_cast<CAPIWriteType>(entry.to_ulong());
+              }
+              else
+              {
+                return static_cast<CAPIWriteType>(entry);
+              }
             });
             return m_setter(api_handle, api_address, this->m_count, api_value.data());
           }

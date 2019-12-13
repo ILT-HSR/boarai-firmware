@@ -39,20 +39,23 @@ namespace boarai::hardware::test
     close(m_socket);
   }
 
-  auto test_server::run_once() -> void
+  auto test_server::run() -> void
   {
-    auto data_guard = std::lock_guard{m_data_mutex};
     modbus_tcp_accept(m_context.handle().get(), &m_socket);
 
-    auto query = std::array<std::byte, MODBUS_TCP_MAX_ADU_LENGTH>{};
-    auto received = modbus_receive(m_context.handle().get(), reinterpret_cast<std::uint8_t *>(query.data()));
-    if (received > 0)
+    while (errno != ECONNRESET)
     {
-      modbus_reply(m_context.handle().get(), reinterpret_cast<std::uint8_t *>(query.data()), received, m_data.get());
-    }
-    else if (received < 0 && errno != ECONNRESET)
-    {
-      throw std::system_error{make_error_code(static_cast<std::errc>(errno))};
+      auto query = std::array<std::byte, MODBUS_TCP_MAX_ADU_LENGTH>{};
+      auto received = modbus_receive(m_context.handle().get(), reinterpret_cast<std::uint8_t *>(query.data()));
+      if (received > 0)
+      {
+        auto data_guard = std::lock_guard{m_data_mutex};
+        modbus_reply(m_context.handle().get(), reinterpret_cast<std::uint8_t *>(query.data()), received, m_data.get());
+      }
+      else if (received < 0 && errno != ECONNRESET)
+      {
+        throw std::system_error{make_error_code(static_cast<std::errc>(errno))};
+      }
     }
   }
 

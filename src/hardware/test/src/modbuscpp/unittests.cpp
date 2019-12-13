@@ -26,7 +26,7 @@ auto constexpr default_server_port = 8989;
 auto test_modbus_tcp_can_connect_if_server_is_listening()
 {
   auto server = test_server{default_mapping_parameters, default_server_port};
-  auto runner = std::async(std::launch::async, [&] { server.run_once(); });
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
 
   auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
   auto connection = modbus::connection{std::move(context)};
@@ -46,7 +46,7 @@ auto test_modbus_tcp_can_read_single_coil()
   using namespace modbus::modbus_literals;
 
   auto server = test_server{default_mapping_parameters, default_server_port};
-  auto runner = std::async(std::launch::async, [&] { server.run_once(); });
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
 
   auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
   auto connection = modbus::connection{std::move(context)};
@@ -60,7 +60,7 @@ auto test_modbus_tcp_can_read_multiple_coils()
   using namespace modbus::modbus_literals;
 
   auto server = test_server{default_mapping_parameters, default_server_port};
-  auto runner = std::async(std::launch::async, [&] { server.run_once(); });
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
 
   auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
   auto connection = modbus::connection{std::move(context)};
@@ -74,13 +74,131 @@ auto test_modbus_tcp_fails_when_trying_to_read_too_many_coils()
   using namespace modbus::modbus_literals;
 
   auto server = test_server{default_mapping_parameters, default_server_port};
-  auto runner = std::async(std::launch::async, [&] { server.run_once(); });
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
 
   auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
   auto connection = modbus::connection{std::move(context)};
   auto client = modbus::client{connection};
 
   ASSERT(std::holds_alternative<std::error_code>(*client.coils(1337_addr, MODBUS_MAX_READ_BITS + 1)));
+}
+
+auto test_modbus_tcp_fails_when_trying_to_write_too_many_coils()
+{
+  using namespace modbus::modbus_literals;
+
+  auto server = test_server{default_mapping_parameters, default_server_port};
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
+
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
+  auto connection = modbus::connection{std::move(context)};
+  auto client = modbus::client{connection};
+
+  auto data = std::vector<bool>(MODBUS_MAX_READ_BITS + 1);
+
+  ASSERT((client.coils(1337_addr, MODBUS_MAX_READ_BITS + 1) = data));
+}
+
+auto test_modbus_tcp_fails_when_trying_to_read_invalid_coil()
+{
+  using namespace modbus::modbus_literals;
+
+  auto server = test_server{default_mapping_parameters, default_server_port};
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
+
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
+  auto connection = modbus::connection{std::move(context)};
+  auto client = modbus::client{connection};
+
+  ASSERT(std::holds_alternative<std::error_code>(*client.coil(0xcafe_addr)));
+}
+
+auto test_modbus_tcp_fails_when_trying_to_write_invalid_coil()
+{
+  using namespace modbus::modbus_literals;
+
+  auto server = test_server{default_mapping_parameters, default_server_port};
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
+
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
+  auto connection = modbus::connection{std::move(context)};
+  auto client = modbus::client{connection};
+
+  ASSERT((client.coil(0xcafe_addr) = true));
+}
+
+auto test_modbus_tcp_can_write_single_coil()
+{
+  using namespace modbus::modbus_literals;
+
+  auto server = test_server{default_mapping_parameters, default_server_port};
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
+
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
+  auto connection = modbus::connection{std::move(context)};
+  auto client = modbus::client{connection};
+
+  ASSERT_EQUAL(std::error_code{}, (client.coil(42_addr) = true));
+}
+
+auto test_modbus_tcp_can_write_and_read_back_single_coil()
+{
+  using namespace modbus::modbus_literals;
+
+  auto server = test_server{default_mapping_parameters, default_server_port};
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
+
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
+  auto connection = modbus::connection{std::move(context)};
+  auto client = modbus::client{connection};
+
+  client.coil(42_addr) = true;
+
+  ASSERT_EQUAL(true, static_cast<bool>(client.coil(42_addr)));
+}
+
+auto test_modbus_tcp_can_write_and_read_back_multiple_coils()
+{
+  using namespace modbus::modbus_literals;
+
+  auto server = test_server{default_mapping_parameters, default_server_port};
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
+
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
+  auto connection = modbus::connection{std::move(context)};
+  auto client = modbus::client{connection};
+
+  client.coils(18_addr, 5) = {true, true, false, true, false};
+
+  ASSERT_EQUAL((std::vector{true, true, false, true, false}), static_cast<std::vector<bool>>(client.coils(18_addr, 5)));
+}
+
+auto test_modbus_tcp_fails_when_number_of_data_points_is_smaller_than_coil_count_when_writing()
+{
+  using namespace modbus::modbus_literals;
+
+  auto server = test_server{default_mapping_parameters, default_server_port};
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
+
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
+  auto connection = modbus::connection{std::move(context)};
+  auto client = modbus::client{connection};
+
+  ASSERT_EQUAL(make_error_code(std::errc::invalid_argument), (client.coils(18_addr, 5) = {true, true}));
+}
+
+auto test_modbus_tcp_fails_when_number_of_data_points_is_larger_than_coil_count_when_writing()
+{
+  using namespace modbus::modbus_literals;
+
+  auto server = test_server{default_mapping_parameters, default_server_port};
+  auto runner = std::async(std::launch::async, [&] { server.run(); });
+
+  auto context = modbus::tcp_context{"127.0.0.1", default_server_port};
+  auto connection = modbus::connection{std::move(context)};
+  auto client = modbus::client{connection};
+
+  ASSERT_EQUAL(make_error_code(std::errc::invalid_argument), (client.coils(18_addr, 3) = {true, true, false, true}));
 }
 
 auto modbuscpp_suite() -> std::pair<cute::suite, std::string>
@@ -93,6 +211,14 @@ auto modbuscpp_suite() -> std::pair<cute::suite, std::string>
           CUTE(test_modbus_tcp_can_read_single_coil),
           CUTE(test_modbus_tcp_can_read_multiple_coils),
           CUTE(test_modbus_tcp_fails_when_trying_to_read_too_many_coils),
+          CUTE(test_modbus_tcp_fails_when_trying_to_write_too_many_coils),
+          CUTE(test_modbus_tcp_fails_when_trying_to_read_invalid_coil),
+          CUTE(test_modbus_tcp_fails_when_trying_to_write_invalid_coil),
+          CUTE(test_modbus_tcp_can_write_single_coil),
+          CUTE(test_modbus_tcp_can_write_and_read_back_single_coil),
+          CUTE(test_modbus_tcp_can_write_and_read_back_multiple_coils),
+          CUTE(test_modbus_tcp_fails_when_number_of_data_points_is_smaller_than_coil_count_when_writing),
+          CUTE(test_modbus_tcp_fails_when_number_of_data_points_is_larger_than_coil_count_when_writing),
       },
       "MODBUSCPP Unit Tests"
   };
