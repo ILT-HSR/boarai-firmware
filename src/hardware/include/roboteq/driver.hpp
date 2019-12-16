@@ -1,8 +1,9 @@
 #ifndef BOARAI_HARDWARE_ROBOTEQ_DRIVER_HPP
 #define BOARAI_HARDWARE_ROBOTEQ_DRIVER_HPP
 
-#include "modbuscpp/modbuscpp.hpp"
+#include "modbuscpp/client.hpp"
 #include "roboteq/channel.hpp"
+#include "roboteq/position.hpp"
 
 #include <system_error>
 
@@ -12,7 +13,7 @@ namespace boarai::hardware::roboteq
   {
     // TODO(smiracco): Implement useful driver API
 
-    explicit driver();
+    driver(modbus::client & client);
 
     /**
      * Set the driver into emergency stop state
@@ -21,22 +22,14 @@ namespace boarai::hardware::roboteq
     auto emergency_stop() -> std::error_code;
 
     /**
-     * Go to absolute desired position
-     * RoboteQ command P
+     * Go to the specified position
+     *
+     * @note This function is equivalent to the Roboteq command P or PR depending on the position type
      *
      * @param channel The target motor channel
-     * @param count The absolute target position
+     * @param position The desired motoer position
      */
-    auto go_to_absolute_position(channel channel, std::int32_t count) -> std::error_code;
-
-    /**
-     * Go to relative desired position
-     * RoboteQ command PR
-     *
-     * @param channel The target motor channel
-     * @param count A number of counts relative to the current position
-     */
-    auto go_to_relative_position(channel channel, std::int32_t delta) -> std::error_code;
+    auto go_to_position(channel channel, position position) -> std::error_code;
 
     /**
      * Set motor speed
@@ -54,7 +47,7 @@ namespace boarai::hardware::roboteq
      * @param channel The target motor channel
      * @param counts The desired counts to set the encoder to
      */
-    auto set_encoder_counts(channel channel, std::int32_t counts) -> std::error_code;
+    auto set_encoder_counter(channel channel, std::int32_t counts) -> std::error_code;
 
     /**
      * Set brushless counter (usually hall sensors)
@@ -63,10 +56,10 @@ namespace boarai::hardware::roboteq
      * @param channel The target motor channel
      * @param counts The desired counts to set the hall sensor to
      */
-    auto set_hall_counts(channel channel, std::int32_t counts) -> std::error_code;
+    auto set_hall_counter(channel channel, std::int32_t counts) -> std::error_code;
 
   private:
-    modbus::client const m_client;
+    modbus::client & m_client;
   };
 
 }  // namespace boarai::hardware::roboteq

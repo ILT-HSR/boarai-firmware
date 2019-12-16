@@ -7,15 +7,11 @@ namespace boarai::hardware::roboteq
 {
   enum struct channel : std::uint8_t
   {
-
-    channel_01 = 1,
-    channel_02 = 2,
-
+    _1 = 1,
     velocity = 1,
-    steering = 2
-
+    _2 = 2,
+    steering = 2,
   };
-
 }  // namespace boarai::hardware::roboteq
 
 #endif
