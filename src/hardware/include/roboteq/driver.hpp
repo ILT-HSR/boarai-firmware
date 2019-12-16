@@ -2,13 +2,17 @@
 #define BOARAI_HARDWARE_ROBOTEQ_DRIVER_HPP
 
 #include "modbuscpp/modbuscpp.hpp"
-#include "roboteq/constants.hpp"
+#include "roboteq/channel.hpp"
+
+#include <system_error>
 
 namespace boarai::hardware::roboteq
 {
   struct driver
   {
     // TODO(smiracco): Implement useful driver API
+
+    explicit driver();
 
     /**
      * Set the driver into emergency stop state
@@ -60,7 +64,11 @@ namespace boarai::hardware::roboteq
      * @param counts The desired counts to set the hall sensor to
      */
     auto set_hall_counts(channel channel, std::int32_t counts) -> std::error_code;
+
+  private:
+    modbus::client const m_client;
   };
+
 }  // namespace boarai::hardware::roboteq
 
 #endif

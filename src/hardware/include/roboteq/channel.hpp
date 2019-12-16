@@ -10,6 +10,10 @@ namespace boarai::hardware::roboteq
 
     channel_01 = 1,
     channel_02 = 2,
+
+    velocity = 1,
+    steering = 2
+
   };
 
 }  // namespace boarai::hardware::roboteq

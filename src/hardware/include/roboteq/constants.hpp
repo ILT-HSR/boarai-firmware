@@ -14,6 +14,7 @@ namespace boarai::hardware::roboteq
     set_motor_speed = 0x0040,
     set_encoder_counts = 0x0060,
     set_hall_counts = 0x0080
+
   };
 
   enum struct queries : std::uint16_t
