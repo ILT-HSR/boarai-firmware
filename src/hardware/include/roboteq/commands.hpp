@@ -11,6 +11,7 @@ namespace boarai::hardware::roboteq::commands
   auto constexpr set_motor_speed = command{0x2002, command::argument_type::signed_32};
   auto constexpr set_encoder_counter = command{0x2003, command::argument_type::signed_32};
   auto constexpr set_hall_counter = command{0x2004, command::argument_type::signed_32};
+  auto constexpr set_motor_command = command{0x2000, command::argument_type::signed_32};
 }  // namespace boarai::hardware::roboteq::commands
 
 #endif

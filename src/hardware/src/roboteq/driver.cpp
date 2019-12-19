@@ -41,4 +41,8 @@ namespace boarai::hardware::roboteq
     return commands::set_hall_counter(m_client, counts, static_cast<std::uint16_t>(channel));
   }
 
+  auto driver::set_motor_command(channel channel, std::int32_t value) -> std::error_code
+  {
+    return commands::set_motor_command(m_client, value, static_cast<std::uint16_t>(channel));
+  }
 }  // namespace boarai::hardware::roboteq

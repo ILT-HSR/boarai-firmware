@@ -58,6 +58,15 @@ namespace boarai::hardware::roboteq
      */
     auto set_hall_counter(channel channel, std::int32_t counts) -> std::error_code;
 
+    /**
+     * Set motor command via CAN
+     * RoboteQ command CG
+     *
+     * @param channel The target motor channel
+     * @param value The desired counts to set the hall sensor to
+     */
+    auto set_motor_command(channel channel, std::int32_t value) -> std::error_code;
+
   private:
     modbus::client & m_client;
   };
