@@ -105,6 +105,7 @@ install(TARGETS "modbuscpp"
 
 add_library("roboteq"
   "src/roboteq/driver.cpp"
+  "src/roboteq/command.cpp"
 )
 
 target_include_directories("roboteq" PUBLIC
