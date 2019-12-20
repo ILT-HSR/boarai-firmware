@@ -2,6 +2,7 @@
 #define BOARAI_HARDWARE_MOTOR_CONTROL_HPP
 
 #include "rclcpp/rclcpp.hpp"
+#include "roboteq/driver.hpp"
 #include "std_msgs/msg/float32.hpp"
 
 #include <modbuscpp/client.hpp>
@@ -21,6 +22,7 @@ namespace boarai::hardware
     rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr m_subscription;
     modbus::connection m_driver_connection;
     modbus::client m_driver_client{m_driver_connection};
+    roboteq::driver m_motor_driver{m_driver_client};
   };
 }  // namespace boarai::hardware
 

@@ -189,8 +189,8 @@ namespace boarai::hardware::roboteq
       }
 
       auto converted_argument = static_cast<std::uint32_t>(argument);
-      auto high_word = static_cast<std::uint16_t>((converted_argument >> 16) & 0xff);
-      auto low_word = static_cast<std::uint16_t>(converted_argument & 0xff);
+      auto high_word = static_cast<std::uint16_t>((converted_argument >> 16) & 0xffff);
+      auto low_word = static_cast<std::uint16_t>(converted_argument & 0xffff);
       return std::pair{high_word, low_word};
     }
 

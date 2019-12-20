@@ -1,6 +1,8 @@
 #include "motor_control.hpp"
 
 #include "rclcpp_components/register_node_macro.hpp"
+#include "roboteq/channel.hpp"
+#include "roboteq/driver.hpp"
 
 #include <modbuscpp/address.hpp>
 #include <modbuscpp/context.hpp>
@@ -43,11 +45,9 @@ namespace boarai::hardware
     RCLCPP_INFO(get_logger(), "Received: '%f'", message->data);
 
     auto velocity_value = static_cast<std::uint16_t>(message->data) % 1000;
+    auto error = m_motor_driver.set_motor_command(roboteq::channel::velocity, velocity_value);
 
-    auto linear_velocity = m_driver_client.holding_registers(0x0001_addr, 2);
-    auto error = (linear_velocity = {0, velocity_value});
-
-    RCLCPP_INFO(get_logger(), "Error status: %s", error.message());
+    RCLCPP_INFO(get_logger(), "Status code: '%s'", error.message().c_str());
   }
 }  // namespace boarai::hardware
 

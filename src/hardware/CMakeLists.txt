@@ -103,7 +103,7 @@ install(TARGETS "modbuscpp"
 
 ### Roboteq Driver Library
 
-add_library("roboteq"
+add_library("roboteq" SHARED
   "src/roboteq/driver.cpp"
   "src/roboteq/command.cpp"
 )
@@ -143,6 +143,7 @@ ament_target_dependencies("motor_control"
 
 target_link_libraries("motor_control"
   "modbuscpp"
+  "roboteq"
 )
 
 install(TARGETS "motor_control"
