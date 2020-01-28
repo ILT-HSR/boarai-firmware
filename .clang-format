@@ -73,7 +73,7 @@ IndentCaseLabels: false
 IndentPPDirectives: None
 IndentWidth: 2
 
-KeepEmptyLinesAtTheStartOfBlocks: false
+KeepEmptyLinesAtTheStartOfBlocks: true
 
 MaxEmptyLinesToKeep: 1
 

@@ -1,5 +1,6 @@
 #include "motor_control.hpp"
 
+#include "layer_constants.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "roboteq/channel.hpp"
 #include "roboteq/driver.hpp"
@@ -29,7 +30,7 @@ namespace boarai::hardware
   }  // namespace
 
   motor_control::motor_control(rclcpp::NodeOptions const & options)
-      : Node{"motor_control", "hardware", options}
+      : Node{MOTOR_CONTROL_NODE_NAME, LAYER_NAMESPACE, options}
       , m_driver_connection{make_context("192.168.1.20", 502)}
   {
     m_subscription =

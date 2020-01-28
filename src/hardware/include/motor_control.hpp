@@ -12,6 +12,9 @@
 
 namespace boarai::hardware
 {
+
+  auto constexpr MOTOR_CONTROL_NODE_NAME{"motor_control"};
+
   struct motor_control : rclcpp::Node
   {
     explicit motor_control(rclcpp::NodeOptions const & options);
