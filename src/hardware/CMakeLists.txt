@@ -132,7 +132,7 @@ install(TARGETS "roboteq"
 ### Motor Control Node Configuration
 
 add_library("motor_control" SHARED
-  "src/motor_control.cpp"
+  "src/motor_control/motor_control.cpp"
 )
 
 ament_target_dependencies("motor_control"
