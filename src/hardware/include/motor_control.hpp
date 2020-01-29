@@ -10,6 +10,8 @@
 #include <modbuscpp/context.hpp>
 #include <modbuscpp/tcp_context.hpp>
 
+#include <optional>
+
 namespace boarai::hardware
 {
 
@@ -17,15 +19,21 @@ namespace boarai::hardware
 
   struct motor_control : rclcpp::Node
   {
+    using super = rclcpp::Node;
+    using super::declare_parameters;
+
     explicit motor_control(rclcpp::NodeOptions const & options);
 
   private:
+    auto declare_parameters() -> void;
+    auto initialize_driver() -> void;
+
     auto handle_message(std_msgs::msg::Float32::SharedPtr message) -> void;
 
     rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr m_subscription;
-    modbus::connection m_driver_connection;
-    modbus::client m_driver_client{m_driver_connection};
-    roboteq::driver m_motor_driver{m_driver_client};
+    std::optional<modbus::connection> m_driver_connection{};
+    std::optional<modbus::client> m_driver_client{};
+    std::optional<roboteq::driver> m_motor_driver{};
   };
 }  // namespace boarai::hardware
 
