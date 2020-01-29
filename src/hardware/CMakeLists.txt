@@ -159,6 +159,13 @@ add_custom_target(run_all_tests ALL
   DEPENDS "modbuscpp_unittests"
 )
 
+### Install Launch Files
+
+install(DIRECTORY
+  "launch"
+  DESTINATION "share/${PROJECT_NAME}"
+)
+
 ### Export Ament Package
 
 ament_export_interfaces("modbuscpp_export" HAS_LIBRARY_TARGET)

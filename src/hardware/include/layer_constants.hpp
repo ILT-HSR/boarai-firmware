@@ -4,7 +4,7 @@
 namespace boarai::hardware
 {
 
-  auto constexpr LAYER_NAMESPACE = "hardware";
+  auto constexpr LAYER_NAMESPACE = "/boarai/hardware";
 
 }
 
