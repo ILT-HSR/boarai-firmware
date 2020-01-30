@@ -47,13 +47,13 @@ namespace boarai::hardware::roboteq
     {
       auto constexpr operator""_abs(unsigned long long encoder_count) -> position
       {
-        assert(encoder_count <= std::numeric_limits<std::int32_t>::max());
+        assert(static_cast<std::int32_t>(encoder_count) <= std::numeric_limits<std::int32_t>::max());
         return {static_cast<std::int32_t>(encoder_count), position_type::absolute};
       }
 
       auto constexpr operator""_rel(unsigned long long encoder_count) -> position
       {
-        assert(encoder_count <= std::numeric_limits<std::int32_t>::max());
+        assert(static_cast<std::int32_t>(encoder_count) <= std::numeric_limits<std::int32_t>::max());
         return {static_cast<std::int32_t>(encoder_count), position_type::relative};
       }
     }  // namespace position_literals
