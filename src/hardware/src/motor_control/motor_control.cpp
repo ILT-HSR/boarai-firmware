@@ -4,6 +4,8 @@
 #include "rclcpp_components/register_node_macro.hpp"
 #include "roboteq/channel.hpp"
 #include "roboteq/driver.hpp"
+#include "support/enum_utility.hpp"
+#include "support/to_string.hpp"
 
 #include <modbuscpp/address.hpp>
 #include <modbuscpp/context.hpp>
@@ -103,14 +105,17 @@ namespace boarai
       std::pair{motor_control::parameter::driver_enabled, "driver_enabled"},
   };
 
+  static_assert(enum_mappings_are_unique(parameter_names), "missing mapping for parameter");
+  static_assert(enum_map_has_all_entries(parameter_names, motor_control::parameter::driver_address),
+                "duplicate key or value in parameter mappings");
+
   template<>
   auto to_string(motor_control::parameter const & object) -> std::string
   {
+    assert(is_valid<motor_control::parameter>(static_cast<std::underlying_type_t<motor_control::parameter>>(object)));
     auto found = std::find_if(cbegin(parameter_names), cend(parameter_names), [&](auto candidate) {
       return candidate.first == object;
     });
-
-    assert(found != cend(parameter_names));
 
     return found->second;
   }
@@ -118,15 +123,26 @@ namespace boarai
   template<>
   auto from_string(std::string const & stringified) -> hardware::motor_control::parameter
   {
+    assert(is_valid<motor_control::parameter>(stringified));
     auto found = std::find_if(cbegin(parameter_names), cend(parameter_names), [&](auto candidate) {
       return candidate.second == stringified;
     });
 
-    assert(found != cend(parameter_names));
-
     return found->first;
   }
 
+  template<>
+  auto is_valid<hardware::motor_control::parameter>(std::underlying_type_t<hardware::motor_control::parameter> candidate)
+      -> bool
+  {
+    return is_valid_helper(candidate, parameter_names);
+  }
+
+  template<>
+  auto is_valid<hardware::motor_control::parameter>(std::string const & candidate) -> bool
+  {
+    return is_valid_helper(candidate, parameter_names);
+  }
 }  // namespace boarai
 
 RCLCPP_COMPONENTS_REGISTER_NODE(boarai::hardware::motor_control)

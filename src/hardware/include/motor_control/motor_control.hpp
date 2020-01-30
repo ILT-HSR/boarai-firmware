@@ -4,6 +4,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "roboteq/driver.hpp"
 #include "std_msgs/msg/float32.hpp"
+#include "support/enum_utility.hpp"
 #include "support/to_string.hpp"
 
 #include <modbuscpp/client.hpp>
@@ -13,6 +14,7 @@
 
 #include <optional>
 #include <string>
+#include <type_traits>
 
 namespace boarai::hardware
 {
@@ -29,6 +31,9 @@ namespace boarai::hardware
       driver_address,
       driver_port,
       driver_enabled,
+
+      // End Marker for enum_utility support
+      END_OF_ENUM
     };
 
     explicit motor_control(rclcpp::NodeOptions const & options);
@@ -56,6 +61,12 @@ namespace boarai
   template<>
   auto from_string(std::string const & stringified) -> hardware::motor_control::parameter;
 
+  template<>
+  auto is_valid<hardware::motor_control::parameter>(std::underlying_type_t<hardware::motor_control::parameter> candidate)
+      -> bool;
+
+  template<>
+  auto is_valid<hardware::motor_control::parameter>(std::string const & candidate) -> bool;
 }  // namespace boarai
 
 #endif
