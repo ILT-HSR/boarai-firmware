@@ -5,6 +5,7 @@
 #include "roboteq/channel.hpp"
 #include "roboteq/driver.hpp"
 #include "support/enum_utility.hpp"
+#include "support/fmt_node.hpp"
 #include "support/to_string.hpp"
 
 #include <modbuscpp/address.hpp>
@@ -44,7 +45,7 @@ namespace boarai::hardware
   }  // namespace
 
   motor_control::motor_control(rclcpp::NodeOptions const & options)
-      : Node{MOTOR_CONTROL_NODE_NAME, LAYER_NAMESPACE, options}
+      : fmt_node{MOTOR_CONTROL_NODE_NAME, LAYER_NAMESPACE, options}
 
   {
     try
@@ -64,7 +65,7 @@ namespace boarai::hardware
     }
     catch (std::exception const & e)
     {
-      RCLCPP_ERROR(get_logger(), "failed to intialize the node. reason: %s", e.what());
+      log_error("failed to intialize the node. reason: {}", e.what());
     }
   }
 
@@ -81,14 +82,14 @@ namespace boarai::hardware
 
     try
     {
-      RCLCPP_INFO(get_logger(), "connecting to motor driver at '%s:%d'", address.c_str(), port);
+      log_info("connecting to motor driver at '{}:{}'", address, port);
       m_driver_connection.emplace(make_context(address, port));
       m_driver_client.emplace(*m_driver_connection);
       m_motor_driver.emplace(*m_driver_client);
     }
     catch (std::exception const & e)
     {
-      RCLCPP_ERROR(get_logger(), "failed to connect to driver: %s", e.what());
+      log_error("failed to connect to driver: {}", e.what());
     }
   }
 
@@ -96,7 +97,7 @@ namespace boarai::hardware
   {
     if (m_motor_driver)
     {
-      RCLCPP_INFO(get_logger(), "disconnecting from motor driver");
+      log_info("disconnecting from motor driver");
       m_motor_driver.reset();
       m_driver_client.reset();
       m_driver_connection.reset();
@@ -136,7 +137,7 @@ namespace boarai::hardware
 
       if (!is_valid<motor_control::parameter>(name))
       {
-        RCLCPP_WARN(get_logger(), "received change of unknown parameter '%s'", name.c_str());
+        log_warning("received change of unknown parameter '{}'", name);
         result.successful = false;
         return result;
       }
@@ -209,6 +210,7 @@ namespace boarai::hardware
       initialize_driver(driver_address(), new_value);
       return static_cast<bool>(m_motor_driver);
     }
+
     return true;
   }
 

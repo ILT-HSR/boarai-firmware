@@ -6,6 +6,7 @@
 #include "roboteq/driver.hpp"
 #include "std_msgs/msg/float32.hpp"
 #include "support/enum_utility.hpp"
+#include "support/fmt_node.hpp"
 #include "support/to_string.hpp"
 
 #include <modbuscpp/client.hpp>
@@ -23,7 +24,7 @@ namespace boarai::hardware
 
   auto constexpr MOTOR_CONTROL_NODE_NAME{"motor_control"};
 
-  struct motor_control : rclcpp::Node
+  struct motor_control : fmt_node
   {
     using super = rclcpp::Node;
     using super::declare_parameters;

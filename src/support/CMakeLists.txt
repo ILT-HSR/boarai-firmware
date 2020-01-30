@@ -32,6 +32,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   )
 endif()
 
+find_package("rclcpp" REQUIRED)
+
 if(BUILD_TESTING)
   find_package("ament_lint_auto" REQUIRED)
   ament_lint_auto_find_test_dependencies()
@@ -46,11 +48,21 @@ ament_lint_auto_find_test_dependencies()
 
 ### Support Library
 
-add_library("support" INTERFACE)
+add_library("support" SHARED
+  "src/fmt_node.cpp"
+)
 
-target_include_directories("support" INTERFACE
+target_include_directories("support" PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries("support"
+  "CONAN_PKG::fmt"
+)
+
+ament_target_dependencies("support"
+  "rclcpp"
 )
 
 install(DIRECTORY "include/support"
@@ -59,12 +71,20 @@ install(DIRECTORY "include/support"
 
 install(TARGETS "support"
   EXPORT "support"
+  ARCHIVE DESTINATION "lib"
+  LIBRARY DESTINATION "lib"
   INCLUDES DESTINATION "include"
+)
+
+install(DIRECTORY
+  "${PROJECT_BINARY_DIR}/conan_imported_libs/"
+  DESTINATION "lib"
 )
 
 ### Export Ament Package
 
-ament_export_include_directories("include")
-ament_export_interfaces("support" HAS_LIBRARY_TARGET)
+ament_export_include_directories("include" ${CONAN_INCLUDE_DIRS})
+ament_export_interfaces("support")
+ament_export_libraries("support")
 
 ament_package()
