@@ -51,6 +51,7 @@ ament_lint_auto_find_test_dependencies()
 find_package("rclcpp" REQUIRED)
 find_package("rclcpp_components" REQUIRED)
 find_package("std_msgs" REQUIRED)
+find_package("boarai_support" REQUIRED)
 
 ### libmodbus C++ interface
 
@@ -139,6 +140,7 @@ ament_target_dependencies("motor_control"
   "rclcpp"
   "rclcpp_components"
   "std_msgs"
+  "boarai_support"
 )
 
 target_link_libraries("motor_control"

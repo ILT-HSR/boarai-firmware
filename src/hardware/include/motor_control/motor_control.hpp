@@ -4,6 +4,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "roboteq/driver.hpp"
 #include "std_msgs/msg/float32.hpp"
+#include "support/to_string.hpp"
 
 #include <modbuscpp/client.hpp>
 #include <modbuscpp/connection.hpp>
@@ -11,6 +12,7 @@
 #include <modbuscpp/tcp_context.hpp>
 
 #include <optional>
+#include <string>
 
 namespace boarai::hardware
 {
@@ -21,6 +23,13 @@ namespace boarai::hardware
   {
     using super = rclcpp::Node;
     using super::declare_parameters;
+
+    enum struct parameter
+    {
+      driver_address,
+      driver_port,
+      driver_enabled,
+    };
 
     explicit motor_control(rclcpp::NodeOptions const & options);
 
@@ -35,6 +44,18 @@ namespace boarai::hardware
     std::optional<modbus::client> m_driver_client{};
     std::optional<roboteq::driver> m_motor_driver{};
   };
+
 }  // namespace boarai::hardware
+
+namespace boarai
+{
+
+  template<>
+  auto to_string(hardware::motor_control::parameter const & object) -> std::string;
+
+  template<>
+  auto from_string(std::string const & stringified) -> hardware::motor_control::parameter;
+
+}  // namespace boarai
 
 #endif

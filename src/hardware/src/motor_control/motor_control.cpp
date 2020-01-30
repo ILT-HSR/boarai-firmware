@@ -30,30 +30,6 @@ namespace boarai::hardware
 {
   namespace
   {
-    enum struct parameter
-    {
-      driver_address,
-      driver_port,
-      driver_enabled,
-    };
-
-    auto constexpr parameter_names = std::array{
-        std::pair{parameter::driver_address, "driver_address"},
-        std::pair{parameter::driver_port, "driver_port"},
-        std::pair{parameter::driver_enabled, "driver_enabled"},
-    };
-
-    auto to_string(parameter parameter) -> std::string
-    {
-      auto found = std::find_if(cbegin(parameter_names), cend(parameter_names), [&](auto candidate) {
-        return candidate.first == parameter;
-      });
-
-      assert(found != cend(parameter_names));
-
-      return found->second;
-    }
-
     auto make_context(std::string address, std::uint16_t port) -> modbus::context
     {
       auto tcp_context = modbus::tcp_context{address, port};
@@ -116,5 +92,41 @@ namespace boarai::hardware
     static_cast<void>(message);
   }
 }  // namespace boarai::hardware
+
+namespace boarai
+{
+  using namespace hardware;
+
+  auto constexpr parameter_names = std::array{
+      std::pair{motor_control::parameter::driver_address, "driver_address"},
+      std::pair{motor_control::parameter::driver_port, "driver_port"},
+      std::pair{motor_control::parameter::driver_enabled, "driver_enabled"},
+  };
+
+  template<>
+  auto to_string(motor_control::parameter const & object) -> std::string
+  {
+    auto found = std::find_if(cbegin(parameter_names), cend(parameter_names), [&](auto candidate) {
+      return candidate.first == object;
+    });
+
+    assert(found != cend(parameter_names));
+
+    return found->second;
+  }
+
+  template<>
+  auto from_string(std::string const & stringified) -> hardware::motor_control::parameter
+  {
+    auto found = std::find_if(cbegin(parameter_names), cend(parameter_names), [&](auto candidate) {
+      return candidate.second == stringified;
+    });
+
+    assert(found != cend(parameter_names));
+
+    return found->first;
+  }
+
+}  // namespace boarai
 
 RCLCPP_COMPONENTS_REGISTER_NODE(boarai::hardware::motor_control)
