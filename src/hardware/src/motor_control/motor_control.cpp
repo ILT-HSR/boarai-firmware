@@ -82,6 +82,8 @@ namespace boarai::hardware
     try
     {
       m_driver_connection.emplace(make_context(address, port));
+      m_driver_client.emplace(*m_driver_connection);
+      m_motor_driver.emplace(*m_driver_client);
     }
     catch (std::exception const & e)
     {
