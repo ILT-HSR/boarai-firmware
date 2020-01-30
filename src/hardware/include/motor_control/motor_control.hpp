@@ -1,6 +1,7 @@
 #ifndef BOARAI_HARDWARE_MOTOR_CONTROL_HPP
 #define BOARAI_HARDWARE_MOTOR_CONTROL_HPP
 
+#include "rcl_interfaces/msg/set_parameters_result.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "roboteq/driver.hpp"
 #include "std_msgs/msg/float32.hpp"
@@ -12,6 +13,7 @@
 #include <modbuscpp/context.hpp>
 #include <modbuscpp/tcp_context.hpp>
 
+#include <cstdint>
 #include <optional>
 #include <string>
 #include <type_traits>
@@ -40,11 +42,23 @@ namespace boarai::hardware
 
   private:
     auto declare_parameters() -> void;
-    auto initialize_driver() -> void;
+    auto initialize_driver(std::string address, std::uint16_t port) -> void;
+    auto disconnect_driver() -> void;
+
+    auto is_driver_enabled() -> bool;
+    auto driver_address() -> std::string;
+    auto driver_port() -> std::int64_t;
+
+    auto on_parameters_changed(std::vector<rclcpp::Parameter> new_parameters) -> rcl_interfaces::msg::SetParametersResult;
+    auto on_driver_enabled_changed(bool new_value) -> bool;
+    auto on_driver_address_changed(std::string new_value) -> bool;
+    auto on_driver_port_changed(std::int64_t new_value) -> bool;
 
     auto handle_message(std_msgs::msg::Float32::SharedPtr message) -> void;
 
     rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr m_subscription;
+    OnSetParametersCallbackHandle::SharedPtr m_on_parameters_changed_handler;
+
     std::optional<modbus::connection> m_driver_connection{};
     std::optional<modbus::client> m_driver_client{};
     std::optional<roboteq::driver> m_motor_driver{};
@@ -67,6 +81,7 @@ namespace boarai
 
   template<>
   auto is_valid<hardware::motor_control::parameter>(std::string const & candidate) -> bool;
+
 }  // namespace boarai
 
 #endif

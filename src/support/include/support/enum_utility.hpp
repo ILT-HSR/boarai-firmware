@@ -127,14 +127,7 @@ namespace boarai
   {
     static_assert(std::is_enum_v<EnumType>, "The key type of the map must be an enum!");
     auto found = std::find_if(cbegin(map), cend(map), [&](auto entry) {
-      if constexpr (std::is_same_v<char const *, std::remove_cv_t<ValueType>>)
-      {
-        return candidate.c_str() == entry.second;
-      }
-      else
-      {
-        return candidate == static_cast<std::string>(entry.second);
-      }
+      return candidate == entry.second;
     });
     return found != cend(map);
   }

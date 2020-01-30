@@ -25,7 +25,8 @@ def generate_launch_description() -> launch.LaunchDescription:
         composable_node_descriptions=[
             MOTOR_CONTROL,           
         ],
-        output='screen'
+        output='screen',
+        emulate_tty=True,
     )
 
     return launch.LaunchDescription([container])

@@ -22,6 +22,7 @@
 
 using namespace std::chrono_literals;
 using namespace std::string_literals;
+using namespace std::placeholders;
 using namespace modbus::modbus_literals;
 
 auto constexpr DEFAULT_DRIVER_ADDRESS{"192.168.1.20"};
@@ -44,9 +45,27 @@ namespace boarai::hardware
 
   motor_control::motor_control(rclcpp::NodeOptions const & options)
       : Node{MOTOR_CONTROL_NODE_NAME, LAYER_NAMESPACE, options}
+
   {
-    declare_parameters();
-    initialize_driver();
+    try
+    {
+      declare_parameters();
+      if (is_driver_enabled())
+      {
+        initialize_driver(driver_address(), driver_port());
+        if (!m_driver_connection)
+        {
+          set_parameter(rclcpp::Parameter{to_string(parameter::driver_enabled), false});
+        }
+      }
+
+      m_on_parameters_changed_handler =
+          add_on_set_parameters_callback(std::bind(&motor_control::on_parameters_changed, this, _1));
+    }
+    catch (std::exception const & e)
+    {
+      RCLCPP_ERROR(get_logger(), "failed to intialize the node. reason: %s", e.what());
+    }
   }
 
   auto motor_control::declare_parameters() -> void
@@ -56,31 +75,13 @@ namespace boarai::hardware
     declare_parameter(to_string(parameter::driver_enabled), DEFAULT_DRIVER_ENABLED);
   }
 
-  auto motor_control::initialize_driver() -> void
+  auto motor_control::initialize_driver(std::string address, std::uint16_t port) -> void
   {
-    auto const [enable_driver, address, port] = [&] {
-      auto parameters = get_parameters({
-          to_string(parameter::driver_enabled),
-          to_string(parameter::driver_address),
-          to_string(parameter::driver_port),
-      });
-      return std::tuple{
-          parameters.at(0).as_bool(),
-          parameters.at(1).as_string(),
-          parameters.at(2).as_int(),
-      };
-    }();
-
-    if (!enable_driver)
-    {
-      RCLCPP_INFO(get_logger(), "driver connections has been disabled. Skipping driver initialization.");
-      return;
-    }
-
-    RCLCPP_INFO(get_logger(), "connecting to motor driver at '%s:%d'", address.c_str(), port);
+    assert(!m_motor_driver);
 
     try
     {
+      RCLCPP_INFO(get_logger(), "connecting to motor driver at '%s:%d'", address.c_str(), port);
       m_driver_connection.emplace(make_context(address, port));
       m_driver_client.emplace(*m_driver_connection);
       m_motor_driver.emplace(*m_driver_client);
@@ -89,6 +90,126 @@ namespace boarai::hardware
     {
       RCLCPP_ERROR(get_logger(), "failed to connect to driver: %s", e.what());
     }
+  }
+
+  auto motor_control::disconnect_driver() -> void
+  {
+    if (m_motor_driver)
+    {
+      RCLCPP_INFO(get_logger(), "disconnecting from motor driver");
+      m_motor_driver.reset();
+      m_driver_client.reset();
+      m_driver_connection.reset();
+    }
+  }
+
+  auto motor_control::is_driver_enabled() -> bool
+  {
+    auto result{false};
+    get_parameter_or(to_string(parameter::driver_enabled), result, DEFAULT_DRIVER_ENABLED);
+    return result;
+  }
+
+  auto motor_control::driver_address() -> std::string
+  {
+    auto result{""s};
+    get_parameter_or(to_string(parameter::driver_address), result, std::string{DEFAULT_DRIVER_ADDRESS});
+    return result;
+  }
+
+  auto motor_control::driver_port() -> std::int64_t
+  {
+    auto result = std::int64_t{};
+    get_parameter_or(to_string(parameter::driver_port), result, static_cast<std::int64_t>(DEFAULT_DRIVER_PORT));
+    return result;
+  }
+
+  auto motor_control::on_parameters_changed(std::vector<rclcpp::Parameter> new_parameters)
+      -> rcl_interfaces::msg::SetParametersResult
+  {
+    auto result = rcl_interfaces::msg::SetParametersResult{};
+    result.successful = true;
+
+    for (auto & param : new_parameters)
+    {
+      auto name = param.get_name();
+
+      if (!is_valid<motor_control::parameter>(name))
+      {
+        RCLCPP_WARN(get_logger(), "received change of unknown parameter '%s'", name.c_str());
+        result.successful = false;
+        return result;
+      }
+
+      switch (from_string<motor_control::parameter>(name))
+      {
+      case parameter::driver_enabled:
+        if (is_driver_enabled() != param.as_bool())
+        {
+          result.successful &= on_driver_enabled_changed(param.as_bool());
+        }
+        break;
+      case parameter::driver_address:
+        if (driver_address() != param.as_string())
+        {
+          result.successful &= on_driver_address_changed(param.as_string());
+        }
+        break;
+      case parameter::driver_port:
+        if (driver_port() != param.as_int())
+        {
+          result.successful &= on_driver_port_changed(param.as_int());
+        }
+        break;
+      case parameter::END_OF_ENUM:
+        break;
+      };
+    }
+
+    return result;
+  }
+
+  auto motor_control::on_driver_enabled_changed(bool new_value) -> bool
+  {
+    if (!new_value && m_motor_driver)
+    {
+      disconnect_driver();
+      return true;
+    }
+    else if (new_value && !m_motor_driver)
+    {
+      initialize_driver(driver_address(), driver_port());
+      return static_cast<bool>(m_motor_driver);
+    }
+    return true;
+  }
+
+  auto motor_control::on_driver_address_changed(std::string new_value) -> bool
+  {
+    if (is_driver_enabled() && m_motor_driver)
+    {
+      disconnect_driver();
+    }
+    if (!new_value.empty() && is_driver_enabled())
+    {
+      initialize_driver(new_value, driver_port());
+      return static_cast<bool>(m_motor_driver);
+    }
+    return true;
+  }
+
+  auto motor_control::on_driver_port_changed(std::int64_t new_value) -> bool
+  {
+    if (is_driver_enabled() && m_motor_driver)
+    {
+      disconnect_driver();
+    }
+    if (new_value && is_driver_enabled())
+    {
+      initialize_driver(driver_address(), new_value);
+      return static_cast<bool>(m_motor_driver);
+    }
+    return true;
   }
 
   auto motor_control::handle_message(std_msgs::msg::Float32::SharedPtr message) -> void
