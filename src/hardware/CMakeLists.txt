@@ -109,34 +109,34 @@ set_target_properties("roboteq" PROPERTIES
   INTERPROCEDURAL_OPTIMIZATION ON
 )
 
-#=== motor_control Node ===#
+#=== tank_drive Node ===#
 
-add_library("motor_control" SHARED
-  "src/motor_control/motor_control.cpp"
+add_library("tank_drive" SHARED
+  "src/tank_drive/tank_drive.cpp"
 )
 
-target_include_directories("motor_control" PUBLIC
+target_include_directories("tank_drive" PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries("motor_control"
+target_link_libraries("tank_drive"
   "modbuscpp"
   "roboteq"
 )
 
-ament_target_dependencies("motor_control"
+ament_target_dependencies("tank_drive"
   "boarai_support"
   "rclcpp"
   "rclcpp_components"
   "std_msgs"
 )
 
-target_compile_features("motor_control" PUBLIC
+target_compile_features("tank_drive" PUBLIC
   "cxx_std_17"
 )
 
-set_target_properties("motor_control" PROPERTIES
+set_target_properties("tank_drive" PROPERTIES
   CXX_STANDARD_REQUIRED ON
   CXX_EXTENSIONS OFF
   INTERPROCEDURAL_OPTIMIZATION ON
@@ -150,7 +150,7 @@ install(TARGETS
   "roboteq"
 
   # nodes
-  "motor_control"
+  "tank_drive"
 
   EXPORT "boarai_hardware"
   LIBRARY DESTINATION "lib"
@@ -166,7 +166,7 @@ install(DIRECTORY
 
 #=== Ament Packaging ===#
 
-rclcpp_components_register_nodes("motor_control" "boarai::hardware::motor_control")
+rclcpp_components_register_nodes("tank_drive" "boarai::hardware::tank_drive")
 
 ament_export_interfaces("boarai_hardware" HAS_LIBRARY_TARGET)
 

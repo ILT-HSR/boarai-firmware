@@ -1,4 +1,4 @@
-#include "motor_control/motor_control.hpp"
+#include "tank_drive/tank_drive.hpp"
 
 #include "layer_constants.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
@@ -46,8 +46,8 @@ namespace boarai::hardware
     }
   }  // namespace
 
-  motor_control::motor_control(rclcpp::NodeOptions const & options)
-      : fmt_node{MOTOR_CONTROL_NODE_NAME, LAYER_NAMESPACE, options}
+  tank_drive::tank_drive(rclcpp::NodeOptions const & options)
+      : fmt_node{TANK_DRIVE_NODE_NAME, LAYER_NAMESPACE, options}
 
   {
     declare_parameters();
@@ -62,19 +62,18 @@ namespace boarai::hardware
 
     m_drive_velocity_service =
         create_service<services::SetDriveVelocity>(HARDWARE_SERVICE_SET_DRIVE_VELOCITY,
-                                                   std::bind(&motor_control::on_set_drive_velocity_request, this, _1, _2));
-    m_on_parameters_changed_handler =
-        add_on_set_parameters_callback(std::bind(&motor_control::on_parameters_changed, this, _1));
+                                                   std::bind(&tank_drive::on_set_drive_velocity_request, this, _1, _2));
+    m_on_parameters_changed_handler = add_on_set_parameters_callback(std::bind(&tank_drive::on_parameters_changed, this, _1));
   }
 
-  auto motor_control::declare_parameters() -> void
+  auto tank_drive::declare_parameters() -> void
   {
     declare_parameter(to_string(parameter::driver_address), DEFAULT_DRIVER_ADDRESS);
     declare_parameter(to_string(parameter::driver_port), DEFAULT_DRIVER_PORT);
     declare_parameter(to_string(parameter::driver_enabled), DEFAULT_DRIVER_ENABLED);
   }
 
-  auto motor_control::initialize_driver(std::string address, std::uint16_t port) -> void
+  auto tank_drive::initialize_driver(std::string address, std::uint16_t port) -> void
   {
     assert(!m_motor_driver);
 
@@ -91,7 +90,7 @@ namespace boarai::hardware
     }
   }
 
-  auto motor_control::disconnect_driver() -> void
+  auto tank_drive::disconnect_driver() -> void
   {
     if (m_motor_driver)
     {
@@ -102,28 +101,28 @@ namespace boarai::hardware
     }
   }
 
-  auto motor_control::is_driver_enabled() -> bool
+  auto tank_drive::is_driver_enabled() -> bool
   {
     auto result{false};
     get_parameter_or(to_string(parameter::driver_enabled), result, DEFAULT_DRIVER_ENABLED);
     return result;
   }
 
-  auto motor_control::driver_address() -> std::string
+  auto tank_drive::driver_address() -> std::string
   {
     auto result{""s};
     get_parameter_or(to_string(parameter::driver_address), result, std::string{DEFAULT_DRIVER_ADDRESS});
     return result;
   }
 
-  auto motor_control::driver_port() -> std::int64_t
+  auto tank_drive::driver_port() -> std::int64_t
   {
     auto result = std::int64_t{};
     get_parameter_or(to_string(parameter::driver_port), result, static_cast<std::int64_t>(DEFAULT_DRIVER_PORT));
     return result;
   }
 
-  auto motor_control::on_parameters_changed(std::vector<rclcpp::Parameter> new_parameters)
+  auto tank_drive::on_parameters_changed(std::vector<rclcpp::Parameter> new_parameters)
       -> rcl_interfaces::msg::SetParametersResult
   {
     auto result = rcl_interfaces::msg::SetParametersResult{};
@@ -133,14 +132,14 @@ namespace boarai::hardware
     {
       auto name = param.get_name();
 
-      if (!is_valid<motor_control::parameter>(name))
+      if (!is_valid<tank_drive::parameter>(name))
       {
         log_warning("received change of unknown parameter '{}'", name);
         result.successful = false;
         return result;
       }
 
-      switch (from_string<motor_control::parameter>(name))
+      switch (from_string<tank_drive::parameter>(name))
       {
       case parameter::driver_enabled:
         if (is_driver_enabled() != param.as_bool())
@@ -168,7 +167,7 @@ namespace boarai::hardware
     return result;
   }
 
-  auto motor_control::on_driver_enabled_changed(bool new_value) -> bool
+  auto tank_drive::on_driver_enabled_changed(bool new_value) -> bool
   {
     if (!new_value && m_motor_driver)
     {
@@ -183,7 +182,7 @@ namespace boarai::hardware
     return true;
   }
 
-  auto motor_control::on_driver_address_changed(std::string new_value) -> bool
+  auto tank_drive::on_driver_address_changed(std::string new_value) -> bool
   {
     if (is_driver_enabled() && m_motor_driver)
     {
@@ -197,7 +196,7 @@ namespace boarai::hardware
     return true;
   }
 
-  auto motor_control::on_driver_port_changed(std::int64_t new_value) -> bool
+  auto tank_drive::on_driver_port_changed(std::int64_t new_value) -> bool
   {
     if (is_driver_enabled() && m_motor_driver)
     {
@@ -212,8 +211,8 @@ namespace boarai::hardware
     return true;
   }
 
-  auto motor_control::on_set_drive_velocity_request(std::shared_ptr<services::SetDriveVelocity::Request> request,
-                                                    std::shared_ptr<services::SetDriveVelocity::Response>) -> void
+  auto tank_drive::on_set_drive_velocity_request(std::shared_ptr<services::SetDriveVelocity::Request> request,
+                                                 std::shared_ptr<services::SetDriveVelocity::Response>) -> void
   {
     auto velocity = request->velocity;
     log_info("received request to set velocity to: r={} and phi={}", velocity.r, velocity.phi);
@@ -226,19 +225,19 @@ namespace boarai
   using namespace hardware;
 
   auto constexpr parameter_names = std::array{
-      std::pair{motor_control::parameter::driver_address, "driver_address"},
-      std::pair{motor_control::parameter::driver_port, "driver_port"},
-      std::pair{motor_control::parameter::driver_enabled, "driver_enabled"},
+      std::pair{tank_drive::parameter::driver_address, "driver_address"},
+      std::pair{tank_drive::parameter::driver_port, "driver_port"},
+      std::pair{tank_drive::parameter::driver_enabled, "driver_enabled"},
   };
 
   static_assert(enum_mappings_are_unique(parameter_names), "missing mapping for parameter");
-  static_assert(enum_map_has_all_entries(parameter_names, motor_control::parameter::driver_address),
+  static_assert(enum_map_has_all_entries(parameter_names, tank_drive::parameter::driver_address),
                 "duplicate key or value in parameter mappings");
 
   template<>
-  auto to_string(motor_control::parameter const & object) -> std::string
+  auto to_string(tank_drive::parameter const & object) -> std::string
   {
-    assert(is_valid<motor_control::parameter>(static_cast<std::underlying_type_t<motor_control::parameter>>(object)));
+    assert(is_valid<tank_drive::parameter>(static_cast<std::underlying_type_t<tank_drive::parameter>>(object)));
     auto found = std::find_if(cbegin(parameter_names), cend(parameter_names), [&](auto candidate) {
       return candidate.first == object;
     });
@@ -247,9 +246,9 @@ namespace boarai
   }
 
   template<>
-  auto from_string(std::string const & stringified) -> hardware::motor_control::parameter
+  auto from_string(std::string const & stringified) -> hardware::tank_drive::parameter
   {
-    assert(is_valid<motor_control::parameter>(stringified));
+    assert(is_valid<tank_drive::parameter>(stringified));
     auto found = std::find_if(cbegin(parameter_names), cend(parameter_names), [&](auto candidate) {
       return candidate.second == stringified;
     });
@@ -258,17 +257,16 @@ namespace boarai
   }
 
   template<>
-  auto is_valid<hardware::motor_control::parameter>(std::underlying_type_t<hardware::motor_control::parameter> candidate)
-      -> bool
+  auto is_valid<hardware::tank_drive::parameter>(std::underlying_type_t<hardware::tank_drive::parameter> candidate) -> bool
   {
     return is_valid_helper(candidate, parameter_names);
   }
 
   template<>
-  auto is_valid<hardware::motor_control::parameter>(std::string const & candidate) -> bool
+  auto is_valid<hardware::tank_drive::parameter>(std::string const & candidate) -> bool
   {
     return is_valid_helper(candidate, parameter_names);
   }
 }  // namespace boarai
 
-RCLCPP_COMPONENTS_REGISTER_NODE(boarai::hardware::motor_control)
+RCLCPP_COMPONENTS_REGISTER_NODE(boarai::hardware::tank_drive)

@@ -4,10 +4,10 @@ from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 
 
-MOTOR_CONTROL: ComposableNode = ComposableNode(
+TANK_DRIVE: ComposableNode = ComposableNode(
     package='boarai_hardware',
-    node_plugin='boarai::hardware::motor_control',
-    node_name='motor_control',
+    node_plugin='boarai::hardware::tank_drive',
+    node_name='tank_drive',
     parameters=[{
         "driver_enabled": True,
         "driver_address": "192.168.1.20",
@@ -23,7 +23,7 @@ def generate_launch_description() -> launch.LaunchDescription:
         package='rclcpp_components',
         node_executable='component_container',
         composable_node_descriptions=[
-            MOTOR_CONTROL,           
+            TANK_DRIVE,           
         ],
         output='screen',
         emulate_tty=True,

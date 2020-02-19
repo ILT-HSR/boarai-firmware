@@ -24,9 +24,9 @@
 namespace boarai::hardware
 {
 
-  auto constexpr MOTOR_CONTROL_NODE_NAME{"motor_control"};
+  auto constexpr TANK_DRIVE_NODE_NAME{"tank_drive"};
 
-  struct motor_control : fmt_node
+  struct tank_drive : fmt_node
   {
     using super = rclcpp::Node;
     using super::declare_parameters;
@@ -41,7 +41,7 @@ namespace boarai::hardware
       END_OF_ENUM
     };
 
-    explicit motor_control(rclcpp::NodeOptions const & options);
+    explicit tank_drive(rclcpp::NodeOptions const & options);
 
   private:
     auto declare_parameters() -> void;
@@ -75,17 +75,16 @@ namespace boarai
 {
 
   template<>
-  auto to_string(hardware::motor_control::parameter const & object) -> std::string;
+  auto to_string(hardware::tank_drive::parameter const & object) -> std::string;
 
   template<>
-  auto from_string(std::string const & stringified) -> hardware::motor_control::parameter;
+  auto from_string(std::string const & stringified) -> hardware::tank_drive::parameter;
 
   template<>
-  auto is_valid<hardware::motor_control::parameter>(std::underlying_type_t<hardware::motor_control::parameter> candidate)
-      -> bool;
+  auto is_valid<hardware::tank_drive::parameter>(std::underlying_type_t<hardware::tank_drive::parameter> candidate) -> bool;
 
   template<>
-  auto is_valid<hardware::motor_control::parameter>(std::string const & candidate) -> bool;
+  auto is_valid<hardware::tank_drive::parameter>(std::string const & candidate) -> bool;
 
 }  // namespace boarai
 
