@@ -27,7 +27,7 @@ endif()
 #=== hmi Node ===#
 
 add_library("hmi" SHARED
-  "src/interface/hmi.cpp"
+  "src/hmi/hmi.cpp"
 )
 
 target_include_directories("hmi" PUBLIC

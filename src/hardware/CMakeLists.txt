@@ -115,6 +115,11 @@ add_library("motor_control" SHARED
   "src/motor_control/motor_control.cpp"
 )
 
+target_include_directories("motor_control" PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
 target_link_libraries("motor_control"
   "modbuscpp"
   "roboteq"
