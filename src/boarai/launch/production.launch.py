@@ -6,7 +6,13 @@ from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
-POSITION_ESTIMATOR = launch.actions.IncludeLaunchDescription(
+CONTROL_LAYER = launch.actions.IncludeLaunchDescription(
+    launch.launch_description_sources.PythonLaunchDescriptionSource(
+        get_package_share_directory('boarai_control') + '/launch/production.launch.py'
+    )
+)
+
+ESTIMATION_LAYER = launch.actions.IncludeLaunchDescription(
     launch.launch_description_sources.PythonLaunchDescriptionSource(
         get_package_share_directory('boarai_estimation') + '/launch/production.launch.py'
     )
@@ -33,7 +39,8 @@ INTELLIGENCE_LAYER = launch.actions.IncludeLaunchDescription(
 
 def generate_launch_description():
     return LaunchDescription([
-        POSITION_ESTIMATOR,
+        CONTROL_LAYER,
+        ESTIMATION_LAYER,
         HARDWARE_LAYER,
         INTERFACE_LAYER,
         INTELLIGENCE_LAYER,
