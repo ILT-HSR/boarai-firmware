@@ -15,7 +15,7 @@ HMI: ComposableNode = ComposableNode(
 def generate_launch_description() -> launch.LaunchDescription:
     container = ComposableNodeContainer(
         node_name='container',
-        node_namespace='/boarai/hmi',
+        node_namespace='/boarai/interface',
         package='rclcpp_components',
         node_executable='component_container',
         composable_node_descriptions=[
