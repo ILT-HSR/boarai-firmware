@@ -9,7 +9,10 @@ include("CompilerWarnings")
 
 #=== System Dependencies ===#
 
+find_package("PkgConfig" REQUIRED)
 find_package("Threads" REQUIRED)
+
+pkg_check_modules("libgps" REQUIRED IMPORTED_TARGET "libgps")
 
 #=== ROS2 Dependencies ===#
 
@@ -142,6 +145,37 @@ set_target_properties("tank_drive" PROPERTIES
   INTERPROCEDURAL_OPTIMIZATION ON
 )
 
+#=== tank_drive Node ===#
+
+add_library("gps_provider" SHARED
+  "src/gps_provider/gps_provider.cpp"
+)
+
+target_include_directories("gps_provider" PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries("gps_provider"
+  "PkgConfig::libgps"
+)
+
+ament_target_dependencies("gps_provider"
+  "boarai_support"
+  "rclcpp"
+  "rclcpp_components"
+)
+
+target_compile_features("gps_provider" PUBLIC
+  "cxx_std_17"
+)
+
+set_target_properties("gps_provider" PROPERTIES
+  CXX_STANDARD_REQUIRED ON
+  CXX_EXTENSIONS OFF
+  INTERPROCEDURAL_OPTIMIZATION ON
+)
+
 #=== Package Installation ===#
 
 install(TARGETS
@@ -151,6 +185,7 @@ install(TARGETS
 
   # nodes
   "tank_drive"
+  "gps_provider"
 
   EXPORT "boarai_hardware"
   LIBRARY DESTINATION "lib"
@@ -167,6 +202,7 @@ install(DIRECTORY
 #=== Ament Packaging ===#
 
 rclcpp_components_register_nodes("tank_drive" "boarai::hardware::tank_drive")
+rclcpp_components_register_nodes("gps_provider" "boarai::hardware::gps_provider")
 
 ament_export_interfaces("boarai_hardware" HAS_LIBRARY_TARGET)
 

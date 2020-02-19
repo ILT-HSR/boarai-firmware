@@ -4,6 +4,13 @@ from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 
 
+GPS_PROVIDER: ComposableNode = ComposableNode(
+    package='boarai_hardware',
+    node_plugin='boarai::hardware::gps_provider',
+    node_name='gps_provider',
+    parameters=[]
+)
+
 TANK_DRIVE: ComposableNode = ComposableNode(
     package='boarai_hardware',
     node_plugin='boarai::hardware::tank_drive',
@@ -23,7 +30,8 @@ def generate_launch_description() -> launch.LaunchDescription:
         package='rclcpp_components',
         node_executable='component_container',
         composable_node_descriptions=[
-            TANK_DRIVE,           
+            GPS_PROVIDER,
+            TANK_DRIVE,
         ],
         output='screen',
         emulate_tty=True,
