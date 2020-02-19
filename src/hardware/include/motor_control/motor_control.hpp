@@ -7,6 +7,7 @@
 #include "std_msgs/msg/float32.hpp"
 #include "support/enum_utility.hpp"
 #include "support/fmt_node.hpp"
+#include "support/messages.hpp"
 #include "support/to_string.hpp"
 
 #include <modbuscpp/client.hpp>
@@ -55,9 +56,9 @@ namespace boarai::hardware
     auto on_driver_address_changed(std::string new_value) -> bool;
     auto on_driver_port_changed(std::int64_t new_value) -> bool;
 
-    auto handle_message(std_msgs::msg::Float32::SharedPtr message) -> void;
+    auto handle_message(messages::Polar2D::SharedPtr message) -> void;
 
-    rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr m_subscription;
+    rclcpp::Subscription<messages::Polar2D>::SharedPtr m_subscription;
     OnSetParametersCallbackHandle::SharedPtr m_on_parameters_changed_handler;
 
     std::optional<modbus::connection> m_driver_connection{};

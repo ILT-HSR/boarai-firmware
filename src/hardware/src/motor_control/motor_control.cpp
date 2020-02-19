@@ -6,6 +6,7 @@
 #include "roboteq/driver.hpp"
 #include "support/enum_utility.hpp"
 #include "support/fmt_node.hpp"
+#include "support/messages.hpp"
 #include "support/to_string.hpp"
 
 #include <modbuscpp/address.hpp>
@@ -48,25 +49,21 @@ namespace boarai::hardware
       : fmt_node{MOTOR_CONTROL_NODE_NAME, LAYER_NAMESPACE, options}
 
   {
-    try
+    declare_parameters();
+    if (is_driver_enabled())
     {
-      declare_parameters();
-      if (is_driver_enabled())
+      initialize_driver(driver_address(), driver_port());
+      if (!m_driver_connection)
       {
-        initialize_driver(driver_address(), driver_port());
-        if (!m_driver_connection)
-        {
-          set_parameter(rclcpp::Parameter{to_string(parameter::driver_enabled), false});
-        }
+        set_parameter(rclcpp::Parameter{to_string(parameter::driver_enabled), false});
       }
+    }
 
-      m_on_parameters_changed_handler =
-          add_on_set_parameters_callback(std::bind(&motor_control::on_parameters_changed, this, _1));
-    }
-    catch (std::exception const & e)
-    {
-      log_error("failed to intialize the node. reason: {}", e.what());
-    }
+    m_subscription = create_subscription<messages::Polar2D>(MOTOR_CONTROL_TOPIC_VELOCITY,
+                                                            10,
+                                                            std::bind(&motor_control::handle_message, this, _1));
+    m_on_parameters_changed_handler =
+        add_on_set_parameters_callback(std::bind(&motor_control::on_parameters_changed, this, _1));
   }
 
   auto motor_control::declare_parameters() -> void
@@ -214,9 +211,12 @@ namespace boarai::hardware
     return true;
   }
 
-  auto motor_control::handle_message(std_msgs::msg::Float32::SharedPtr message) -> void
+  auto motor_control::handle_message(boarai::messages::Polar2D::SharedPtr message) -> void
   {
-    static_cast<void>(message);
+    auto vector_length = message->r;
+    auto angle = message->phi;
+
+    log_info("received new drive direction '({}, {})'", vector_length, angle);
   }
 }  // namespace boarai::hardware
 

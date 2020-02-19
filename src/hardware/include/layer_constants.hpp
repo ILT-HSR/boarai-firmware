@@ -6,6 +6,8 @@ namespace boarai::hardware
 
   auto constexpr LAYER_NAMESPACE = "/boarai/hardware";
 
-}
+  auto constexpr MOTOR_CONTROL_TOPIC_VELOCITY = "velocity";
+
+}  // namespace boarai::hardware
 
 #endif
