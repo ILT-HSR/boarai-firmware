@@ -7,7 +7,7 @@ from launch_ros.descriptions import ComposableNode
 POSITION_ESTIMATOR: ComposableNode = ComposableNode(
     package='boarai_estimation',
     node_plugin='boarai::estimation::position_estimator',
-    node_name='cortex',
+    node_name='position_estimator',
     parameters=[]
 )
 
