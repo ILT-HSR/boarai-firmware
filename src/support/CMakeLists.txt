@@ -52,7 +52,7 @@ install(DIRECTORY "include/support"
 )
 
 install(TARGETS "support"
-  EXPORT "support"
+  EXPORT "boarai_support"
   ARCHIVE DESTINATION "lib"
   LIBRARY DESTINATION "lib"
   INCLUDES DESTINATION "include"
@@ -68,7 +68,7 @@ install(DIRECTORY
 
 ament_export_dependencies("rosidl_default_runtime")
 ament_export_include_directories("include" ${CONAN_INCLUDE_DIRS})
-ament_export_interfaces("support")
+ament_export_interfaces("boarai_support")
 ament_export_libraries("support")
 
 ament_package()

@@ -121,17 +121,17 @@ target_link_libraries("motor_control"
 )
 
 ament_target_dependencies("motor_control"
+  "boarai_support"
   "rclcpp"
   "rclcpp_components"
   "std_msgs"
-  "boarai_support"
 )
 
-target_compile_features("roboteq" PUBLIC
+target_compile_features("motor_control" PUBLIC
   "cxx_std_17"
 )
 
-set_target_properties("roboteq" PROPERTIES
+set_target_properties("motor_control" PROPERTIES
   CXX_STANDARD_REQUIRED ON
   CXX_EXTENSIONS OFF
   INTERPROCEDURAL_OPTIMIZATION ON
@@ -152,12 +152,6 @@ install(TARGETS
   ARCHIVE DESTINATION "lib"
   RUNTIME DESTINATION "lib"
   INCLUDES DESTINATION "include"
-)
-
-install(DIRECTORY
-  "include/modbuscpp"
-  "include/roboteq"
-  DESTINATION "include"
 )
 
 install(DIRECTORY

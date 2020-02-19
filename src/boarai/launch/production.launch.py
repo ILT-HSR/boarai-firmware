@@ -12,8 +12,15 @@ HARDWARE_LAYER = launch.actions.IncludeLaunchDescription(
     )
 )
 
+INTERFACE_LAYER = launch.actions.IncludeLaunchDescription(
+    launch.launch_description_sources.PythonLaunchDescriptionSource(
+        get_package_share_directory('boarai_interface') + '/launch/production.launch.py'
+    )
+)
+
 
 def generate_launch_description():
     return LaunchDescription([
         HARDWARE_LAYER,
+        INTERFACE_LAYER,
     ])
