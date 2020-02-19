@@ -8,6 +8,7 @@
 #include "support/enum_utility.hpp"
 #include "support/fmt_node.hpp"
 #include "support/messages.hpp"
+#include "support/services.hpp"
 #include "support/to_string.hpp"
 
 #include <modbuscpp/client.hpp>
@@ -56,8 +57,10 @@ namespace boarai::hardware
     auto on_driver_address_changed(std::string new_value) -> bool;
     auto on_driver_port_changed(std::int64_t new_value) -> bool;
 
-    auto handle_message(messages::Polar2D::SharedPtr message) -> void;
+    auto on_set_drive_velocity_request(std::shared_ptr<services::SetDriveVelocity::Request> request,
+                                       std::shared_ptr<services::SetDriveVelocity::Response> response) -> void;
 
+    rclcpp::Service<services::SetDriveVelocity>::SharedPtr m_drive_velocity_service;
     rclcpp::Subscription<messages::Polar2D>::SharedPtr m_subscription;
     OnSetParametersCallbackHandle::SharedPtr m_on_parameters_changed_handler;
 

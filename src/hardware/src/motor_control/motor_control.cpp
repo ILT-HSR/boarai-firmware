@@ -7,6 +7,7 @@
 #include "support/enum_utility.hpp"
 #include "support/fmt_node.hpp"
 #include "support/messages.hpp"
+#include "support/services.hpp"
 #include "support/to_string.hpp"
 
 #include <modbuscpp/address.hpp>
@@ -59,9 +60,9 @@ namespace boarai::hardware
       }
     }
 
-    m_subscription = create_subscription<messages::Polar2D>(MOTOR_CONTROL_TOPIC_VELOCITY,
-                                                            10,
-                                                            std::bind(&motor_control::handle_message, this, _1));
+    m_drive_velocity_service =
+        create_service<services::SetDriveVelocity>(HARDWARE_SERVICE_SET_DRIVE_VELOCITY,
+                                                   std::bind(&motor_control::on_set_drive_velocity_request, this, _1, _2));
     m_on_parameters_changed_handler =
         add_on_set_parameters_callback(std::bind(&motor_control::on_parameters_changed, this, _1));
   }
@@ -211,13 +212,13 @@ namespace boarai::hardware
     return true;
   }
 
-  auto motor_control::handle_message(boarai::messages::Polar2D::SharedPtr message) -> void
+  auto motor_control::on_set_drive_velocity_request(std::shared_ptr<services::SetDriveVelocity::Request> request,
+                                                    std::shared_ptr<services::SetDriveVelocity::Response>) -> void
   {
-    auto vector_length = message->r;
-    auto angle = message->phi;
-
-    log_info("received new drive direction '({}, {})'", vector_length, angle);
+    auto velocity = request->velocity;
+    log_info("received request to set velocity to: r={} and phi={}", velocity.r, velocity.phi);
   }
+
 }  // namespace boarai::hardware
 
 namespace boarai
