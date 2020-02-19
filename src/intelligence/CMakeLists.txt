@@ -23,7 +23,7 @@ if(BUILD_TESTING)
   set(ament_cmake_clang_format_CONFIG_FILE "${PROJECT_SOURCE_DIR}/../../.clang-format")
 endif()
 
-### Node/Library Configuration
+#=== cortex Node ===#
 
 add_library("cortex" SHARED
   "src/cortex/cortex.cpp"

@@ -24,6 +24,7 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
+  <exec_depend>boarai_estimation</exec_depend>
   <exec_depend>boarai_hardware</exec_depend>
   <exec_depend>boarai_interface</exec_depend>
   <exec_depend>boarai_intelligence</exec_depend>

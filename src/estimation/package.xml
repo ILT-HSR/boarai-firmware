@@ -19,10 +19,11 @@
 
   <url>https://github.com/ILT-HSR/boarai-firmware</url>
 
-  <buildtool_depend>ament_cmake</buildtool_depend>
+  <build_depend>boarai_support</build_depend>
 
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_cmake_clang_format</test_depend>
+  <test_depend>ament_cmake_lint_cmake</test_depend>
+  <test_depend>amend_cmake_xmllint</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
