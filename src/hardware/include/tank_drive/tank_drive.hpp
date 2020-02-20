@@ -4,7 +4,6 @@
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "roboteq/driver.hpp"
-#include "std_msgs/msg/float32.hpp"
 #include "support/enum_utility.hpp"
 #include "support/fmt_node.hpp"
 #include "support/messages.hpp"

@@ -214,7 +214,7 @@ namespace boarai::hardware
   auto tank_drive::on_set_drive_velocity_request(std::shared_ptr<services::SetDriveVelocity::Request> request,
                                                  std::shared_ptr<services::SetDriveVelocity::Response>) -> void
   {
-    auto velocity = request->velocity;
+    auto velocity = request->velocity.value;
     log_info("received request to set velocity to: r={} and phi={}", velocity.r, velocity.phi);
   }
 
