@@ -20,7 +20,7 @@ find_package("ament_cmake" REQUIRED)
 find_package("boarai_support" REQUIRED)
 find_package("rclcpp_components" REQUIRED)
 find_package("rclcpp" REQUIRED)
-find_package("rosidl_default_generators" REQUIRED)
+find_package("sensor_msgs" REQUIRED)
 find_package("std_msgs" REQUIRED)
 
 #=== Testing Setup ===#
@@ -145,10 +145,11 @@ set_target_properties("tank_drive" PROPERTIES
   INTERPROCEDURAL_OPTIMIZATION ON
 )
 
-#=== tank_drive Node ===#
+#=== gps_provider Node ===#
 
 add_library("gps_provider" SHARED
   "src/gps_provider/gps_provider.cpp"
+  "src/gps_provider/gpsd_client.cpp"
 )
 
 target_include_directories("gps_provider" PUBLIC
@@ -164,6 +165,8 @@ ament_target_dependencies("gps_provider"
   "boarai_support"
   "rclcpp"
   "rclcpp_components"
+  "sensor_msgs"
+  "std_msgs"
 )
 
 target_compile_features("gps_provider" PUBLIC
