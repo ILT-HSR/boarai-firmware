@@ -36,6 +36,9 @@ namespace boarai::hardware
       driver_port,
       driver_enabled,
 
+      maximum_linear_velocity,
+      maximum_angular_velocity,
+
       // End Marker for enum_utility support
       END_OF_ENUM
     };

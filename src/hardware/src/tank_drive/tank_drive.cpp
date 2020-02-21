@@ -31,6 +31,8 @@ using namespace modbus::modbus_literals;
 auto constexpr DEFAULT_DRIVER_ADDRESS{"192.168.1.20"};
 auto constexpr DEFAULT_DRIVER_PORT{502};
 auto constexpr DEFAULT_DRIVER_ENABLED{true};
+auto constexpr DEFAULT_MAXIMUM_LINEAR_VELOCITY{2.9};
+auto constexpr DEFAULT_MAXIMUM_ANGULAR_VELOCITY{90};
 
 namespace boarai::hardware
 {
@@ -71,6 +73,8 @@ namespace boarai::hardware
     declare_parameter(to_string(parameter::driver_address), DEFAULT_DRIVER_ADDRESS);
     declare_parameter(to_string(parameter::driver_port), DEFAULT_DRIVER_PORT);
     declare_parameter(to_string(parameter::driver_enabled), DEFAULT_DRIVER_ENABLED);
+    declare_parameter(to_string(parameter::maximum_linear_velocity), DEFAULT_MAXIMUM_LINEAR_VELOCITY);
+    declare_parameter(to_string(parameter::maximum_angular_velocity), DEFAULT_MAXIMUM_ANGULAR_VELOCITY);
   }
 
   auto tank_drive::initialize_driver(std::string address, std::uint16_t port) -> void
@@ -159,6 +163,8 @@ namespace boarai::hardware
           result.successful &= on_driver_port_changed(param.as_int());
         }
         break;
+      case parameter::maximum_linear_velocity:
+      case parameter::maximum_angular_velocity:
       case parameter::END_OF_ENUM:
         break;
       };
@@ -219,54 +225,5 @@ namespace boarai::hardware
   }
 
 }  // namespace boarai::hardware
-
-namespace boarai
-{
-  using namespace hardware;
-
-  auto constexpr parameter_names = std::array{
-      std::pair{tank_drive::parameter::driver_address, "driver_address"},
-      std::pair{tank_drive::parameter::driver_port, "driver_port"},
-      std::pair{tank_drive::parameter::driver_enabled, "driver_enabled"},
-  };
-
-  static_assert(enum_mappings_are_unique(parameter_names), "missing mapping for parameter");
-  static_assert(enum_map_has_all_entries(parameter_names, tank_drive::parameter::driver_address),
-                "duplicate key or value in parameter mappings");
-
-  template<>
-  auto to_string(tank_drive::parameter const & object) -> std::string
-  {
-    assert(is_valid<tank_drive::parameter>(static_cast<std::underlying_type_t<tank_drive::parameter>>(object)));
-    auto found = std::find_if(cbegin(parameter_names), cend(parameter_names), [&](auto candidate) {
-      return candidate.first == object;
-    });
-
-    return found->second;
-  }
-
-  template<>
-  auto from_string(std::string const & stringified) -> hardware::tank_drive::parameter
-  {
-    assert(is_valid<tank_drive::parameter>(stringified));
-    auto found = std::find_if(cbegin(parameter_names), cend(parameter_names), [&](auto candidate) {
-      return candidate.second == stringified;
-    });
-
-    return found->first;
-  }
-
-  template<>
-  auto is_valid<hardware::tank_drive::parameter>(std::underlying_type_t<hardware::tank_drive::parameter> candidate) -> bool
-  {
-    return is_valid_helper(candidate, parameter_names);
-  }
-
-  template<>
-  auto is_valid<hardware::tank_drive::parameter>(std::string const & candidate) -> bool
-  {
-    return is_valid_helper(candidate, parameter_names);
-  }
-}  // namespace boarai
 
 RCLCPP_COMPONENTS_REGISTER_NODE(boarai::hardware::tank_drive)
