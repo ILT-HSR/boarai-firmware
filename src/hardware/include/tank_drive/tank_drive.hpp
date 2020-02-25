@@ -53,6 +53,8 @@ namespace boarai::hardware
     auto is_driver_enabled() -> bool;
     auto driver_address() -> std::string;
     auto driver_port() -> std::int64_t;
+    auto maximum_linear_velocity() -> double;
+    auto maximum_angular_velocity() -> double;
 
     auto on_parameters_changed(std::vector<rclcpp::Parameter> new_parameters) -> rcl_interfaces::msg::SetParametersResult;
     auto on_driver_enabled_changed(bool new_value) -> bool;

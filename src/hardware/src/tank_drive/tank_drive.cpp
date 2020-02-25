@@ -17,6 +17,7 @@
 #include <array>
 #include <cassert>
 #include <chrono>
+#include <cmath>
 #include <cstdint>
 #include <functional>
 #include <iterator>
@@ -32,7 +33,7 @@ auto constexpr DEFAULT_DRIVER_ADDRESS{"192.168.1.20"};
 auto constexpr DEFAULT_DRIVER_PORT{502};
 auto constexpr DEFAULT_DRIVER_ENABLED{true};
 auto constexpr DEFAULT_MAXIMUM_LINEAR_VELOCITY{2.9};
-auto constexpr DEFAULT_MAXIMUM_ANGULAR_VELOCITY{90};
+auto constexpr DEFAULT_MAXIMUM_ANGULAR_VELOCITY{90.0};
 
 namespace boarai::hardware
 {
@@ -46,6 +47,7 @@ namespace boarai::hardware
 
       return std::move(tcp_context);
     }
+
   }  // namespace
 
   tank_drive::tank_drive(rclcpp::NodeOptions const & options)
@@ -56,9 +58,14 @@ namespace boarai::hardware
     if (is_driver_enabled())
     {
       initialize_driver(driver_address(), driver_port());
-      if (!m_driver_connection)
+      if (!m_motor_driver)
       {
         set_parameter(rclcpp::Parameter{to_string(parameter::driver_enabled), false});
+      }
+      else
+      {
+        m_motor_driver->set_motor_command(roboteq::channel::velocity, 0);
+        m_motor_driver->set_motor_command(roboteq::channel::steering, 0);
       }
     }
 
@@ -123,6 +130,20 @@ namespace boarai::hardware
   {
     auto result = std::int64_t{};
     get_parameter_or(to_string(parameter::driver_port), result, static_cast<std::int64_t>(DEFAULT_DRIVER_PORT));
+    return result;
+  }
+
+  auto tank_drive::maximum_linear_velocity() -> double
+  {
+    auto result{0.0};
+    get_parameter_or(to_string(parameter::maximum_linear_velocity), result, DEFAULT_MAXIMUM_LINEAR_VELOCITY);
+    return result;
+  }
+
+  auto tank_drive::maximum_angular_velocity() -> double
+  {
+    auto result{0.0};
+    get_parameter_or(to_string(parameter::maximum_angular_velocity), result, DEFAULT_MAXIMUM_ANGULAR_VELOCITY);
     return result;
   }
 
@@ -220,8 +241,21 @@ namespace boarai::hardware
   auto tank_drive::on_set_drive_velocity_request(std::shared_ptr<services::SetDriveVelocity::Request> request,
                                                  std::shared_ptr<services::SetDriveVelocity::Response>) -> void
   {
-    auto velocity = request->velocity.value;
-    log_info("received request to set velocity to: r={} and phi={}", velocity.r, velocity.phi);
+    auto [linear_velocity, angular_velocity] = request->velocity.value;
+
+    linear_velocity = std::abs(linear_velocity);
+    linear_velocity = std::min(maximum_linear_velocity(), linear_velocity);
+    if (angular_velocity < -90 || angular_velocity > 90)
+    {
+      linear_velocity = -std::abs(linear_velocity);
+    }
+    auto throttle = static_cast<std::int32_t>(1000 / maximum_linear_velocity() * linear_velocity);
+    log_info("determined throttle to be: {}", throttle);
+
+    if (m_motor_driver)
+    {
+      m_motor_driver->set_motor_command(roboteq::channel::velocity, throttle);
+    }
   }
 
 }  // namespace boarai::hardware
