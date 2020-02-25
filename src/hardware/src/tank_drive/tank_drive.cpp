@@ -33,7 +33,7 @@ auto constexpr DEFAULT_DRIVER_ADDRESS{"192.168.1.20"};
 auto constexpr DEFAULT_DRIVER_PORT{502};
 auto constexpr DEFAULT_DRIVER_ENABLED{true};
 auto constexpr DEFAULT_MAXIMUM_LINEAR_VELOCITY{2.9};
-auto constexpr DEFAULT_MAXIMUM_ANGULAR_VELOCITY{90.0};
+auto constexpr DEFAULT_MAXIMUM_ANGULAR_VELOCITY{651.59};
 
 namespace boarai::hardware
 {
@@ -243,18 +243,18 @@ namespace boarai::hardware
   {
     auto [linear_velocity, angular_velocity] = request->velocity.value;
 
-    linear_velocity = std::abs(linear_velocity);
-    linear_velocity = std::min(maximum_linear_velocity(), linear_velocity);
-    if (angular_velocity < -90 || angular_velocity > 90)
-    {
-      linear_velocity = -std::abs(linear_velocity);
-    }
     auto throttle = static_cast<std::int32_t>(1000 / maximum_linear_velocity() * linear_velocity);
+    throttle = throttle < 0 ? std::max(throttle, -1000) : std::min(throttle, 1000);
     log_info("determined throttle to be: {}", throttle);
+
+    auto steering = static_cast<std::int32_t>(1000 / maximum_angular_velocity() * angular_velocity);
+    steering = steering < 0 ? std::max(steering, -1000) : std::min(steering, 1000);
+    log_info("determined steering to be: {}", steering);
 
     if (m_motor_driver)
     {
       m_motor_driver->set_motor_command(roboteq::channel::velocity, throttle);
+      m_motor_driver->set_motor_command(roboteq::channel::steering, steering);
     }
   }
 
