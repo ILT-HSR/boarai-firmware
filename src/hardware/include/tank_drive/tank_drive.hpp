@@ -64,10 +64,13 @@ namespace boarai::hardware
     auto on_driver_port_changed(std::int64_t new_value) -> bool;
     auto on_wheel_spacing_changed(double new_value) -> bool;
 
-    auto on_set_drive_velocity_request(std::shared_ptr<services::SetDriveVelocity::Request> request,
-                                       std::shared_ptr<services::SetDriveVelocity::Response> response) -> void;
+    auto on_set_drive_velocity_request(services::SetDriveVelocity::Request::SharedPtr request,
+                                       services::SetDriveVelocity::Response::SharedPtr response) -> void;
+    auto on_get_maximum_angular_velocity_request(services::GetMaximumAngularVelocity::Request::SharedPtr request,
+                                                 services::GetMaximumAngularVelocity::Response::SharedPtr response) -> void;
 
     rclcpp::Service<services::SetDriveVelocity>::SharedPtr m_drive_velocity_service;
+    rclcpp::Service<services::GetMaximumAngularVelocity>::SharedPtr m_get_maximumum_angular_velocity_service;
     rclcpp::Subscription<messages::Polar2D>::SharedPtr m_subscription;
     OnSetParametersCallbackHandle::SharedPtr m_on_parameters_changed_handler;
 

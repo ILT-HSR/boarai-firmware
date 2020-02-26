@@ -77,6 +77,9 @@ namespace boarai::hardware
     m_drive_velocity_service =
         create_service<services::SetDriveVelocity>(HARDWARE_SERVICE_SET_DRIVE_VELOCITY,
                                                    std::bind(&tank_drive::on_set_drive_velocity_request, this, _1, _2));
+    m_get_maximumum_angular_velocity_service = create_service<services::GetMaximumAngularVelocity>(
+        HARDWARE_SERVICE_GET_MAXIMUM_ANGULAR_VELOCITY,
+        std::bind(&tank_drive::on_get_maximum_angular_velocity_request, this, _1, _2));
     m_on_parameters_changed_handler = add_on_set_parameters_callback(std::bind(&tank_drive::on_parameters_changed, this, _1));
   }
 
@@ -270,6 +273,13 @@ namespace boarai::hardware
       m_motor_driver->set_motor_command(roboteq::channel::velocity, throttle);
       m_motor_driver->set_motor_command(roboteq::channel::steering, steering);
     }
+  }
+
+  auto tank_drive::on_get_maximum_angular_velocity_request(services::GetMaximumAngularVelocity::Request::SharedPtr,
+                                                           services::GetMaximumAngularVelocity::Response::SharedPtr response)
+      -> void
+  {
+    response->velocity = maximum_angular_velocity();
   }
 
 }  // namespace boarai::hardware
