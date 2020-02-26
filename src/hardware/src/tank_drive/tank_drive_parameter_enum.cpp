@@ -10,8 +10,8 @@ namespace boarai
       std::pair{tank_drive::parameter::driver_address, "driver_address"},
       std::pair{tank_drive::parameter::driver_port, "driver_port"},
       std::pair{tank_drive::parameter::driver_enabled, "driver_enabled"},
+      std::pair{tank_drive::parameter::wheel_spacing, "wheel_spacing"},
       std::pair{tank_drive::parameter::maximum_linear_velocity, "maximum_linear_velocity"},
-      std::pair{tank_drive::parameter::maximum_angular_velocity, "maximum_angular_velocity"},
   };
 
   static_assert(enum_mappings_are_unique(parameter_names), "missing mapping for parameter");

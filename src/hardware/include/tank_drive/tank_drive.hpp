@@ -19,6 +19,7 @@
 #include <optional>
 #include <string>
 #include <type_traits>
+#include <utility>
 
 namespace boarai::hardware
 {
@@ -28,6 +29,7 @@ namespace boarai::hardware
   struct tank_drive : fmt_node
   {
     using super = rclcpp::Node;
+    using super::declare_parameter;
     using super::declare_parameters;
 
     enum struct parameter
@@ -35,9 +37,8 @@ namespace boarai::hardware
       driver_address,
       driver_port,
       driver_enabled,
-
+      wheel_spacing,
       maximum_linear_velocity,
-      maximum_angular_velocity,
 
       // End Marker for enum_utility support
       END_OF_ENUM
@@ -52,7 +53,8 @@ namespace boarai::hardware
 
     auto is_driver_enabled() -> bool;
     auto driver_address() -> std::string;
-    auto driver_port() -> std::int64_t;
+    auto driver_port() -> std::uint16_t;
+    auto wheel_spacing() -> double;
     auto maximum_linear_velocity() -> double;
     auto maximum_angular_velocity() -> double;
 
@@ -60,6 +62,7 @@ namespace boarai::hardware
     auto on_driver_enabled_changed(bool new_value) -> bool;
     auto on_driver_address_changed(std::string new_value) -> bool;
     auto on_driver_port_changed(std::int64_t new_value) -> bool;
+    auto on_wheel_spacing_changed(double new_value) -> bool;
 
     auto on_set_drive_velocity_request(std::shared_ptr<services::SetDriveVelocity::Request> request,
                                        std::shared_ptr<services::SetDriveVelocity::Response> response) -> void;

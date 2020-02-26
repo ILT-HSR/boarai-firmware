@@ -1,6 +1,9 @@
 #include "tank_drive/tank_drive.hpp"
 
 #include "layer_constants.hpp"
+#include "rcl_interfaces/msg/parameter_descriptor.hpp"
+#include "rcl_interfaces/msg/parameter_type.hpp"
+#include "rcl_interfaces/msg/set_parameters_result.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "roboteq/channel.hpp"
 #include "roboteq/driver.hpp"
@@ -22,6 +25,7 @@
 #include <functional>
 #include <iterator>
 #include <string>
+#include <type_traits>
 #include <utility>
 
 using namespace std::chrono_literals;
@@ -29,14 +33,15 @@ using namespace std::string_literals;
 using namespace std::placeholders;
 using namespace modbus::modbus_literals;
 
-auto constexpr DEFAULT_DRIVER_ADDRESS{"192.168.1.20"};
-auto constexpr DEFAULT_DRIVER_PORT{502};
-auto constexpr DEFAULT_DRIVER_ENABLED{true};
-auto constexpr DEFAULT_MAXIMUM_LINEAR_VELOCITY{2.9};
-auto constexpr DEFAULT_MAXIMUM_ANGULAR_VELOCITY{651.59};
+auto DEFAULT_DRIVER_ADDRESS{"192.168.1.20"};
+auto DEFAULT_DRIVER_PORT{static_cast<std::uint16_t>(502)};
+auto DEFAULT_DRIVER_ENABLED{true};
+auto DEFAULT_WHEEL_SPACING{0.0};
+auto DEFAULT_MAXIMUM_LINEAR_VELOCITY{1.0};
 
 namespace boarai::hardware
 {
+
   namespace
   {
     auto make_context(std::string address, std::uint16_t port) -> modbus::context
@@ -47,7 +52,6 @@ namespace boarai::hardware
 
       return std::move(tcp_context);
     }
-
   }  // namespace
 
   tank_drive::tank_drive(rclcpp::NodeOptions const & options)
@@ -55,6 +59,7 @@ namespace boarai::hardware
 
   {
     declare_parameters();
+
     if (is_driver_enabled())
     {
       initialize_driver(driver_address(), driver_port());
@@ -80,8 +85,8 @@ namespace boarai::hardware
     declare_parameter(to_string(parameter::driver_address), DEFAULT_DRIVER_ADDRESS);
     declare_parameter(to_string(parameter::driver_port), DEFAULT_DRIVER_PORT);
     declare_parameter(to_string(parameter::driver_enabled), DEFAULT_DRIVER_ENABLED);
+    declare_parameter(to_string(parameter::wheel_spacing), DEFAULT_WHEEL_SPACING);
     declare_parameter(to_string(parameter::maximum_linear_velocity), DEFAULT_MAXIMUM_LINEAR_VELOCITY);
-    declare_parameter(to_string(parameter::maximum_angular_velocity), DEFAULT_MAXIMUM_ANGULAR_VELOCITY);
   }
 
   auto tank_drive::initialize_driver(std::string address, std::uint16_t port) -> void
@@ -126,10 +131,17 @@ namespace boarai::hardware
     return result;
   }
 
-  auto tank_drive::driver_port() -> std::int64_t
+  auto tank_drive::driver_port() -> std::uint16_t
   {
-    auto result = std::int64_t{};
-    get_parameter_or(to_string(parameter::driver_port), result, static_cast<std::int64_t>(DEFAULT_DRIVER_PORT));
+    auto result = std::uint16_t{};
+    get_parameter_or(to_string(parameter::driver_port), result, DEFAULT_DRIVER_PORT);
+    return result;
+  }
+
+  auto tank_drive::wheel_spacing() -> double
+  {
+    auto result{0.0};
+    get_parameter_or(to_string(parameter::wheel_spacing), result, DEFAULT_WHEEL_SPACING);
     return result;
   }
 
@@ -142,9 +154,9 @@ namespace boarai::hardware
 
   auto tank_drive::maximum_angular_velocity() -> double
   {
-    auto result{0.0};
-    get_parameter_or(to_string(parameter::maximum_angular_velocity), result, DEFAULT_MAXIMUM_ANGULAR_VELOCITY);
-    return result;
+    assert(wheel_spacing() > 0.0);
+    auto turn_circumference = wheel_spacing() * M_PI;
+    return 360.0 * maximum_linear_velocity() / turn_circumference;
   }
 
   auto tank_drive::on_parameters_changed(std::vector<rclcpp::Parameter> new_parameters)
@@ -184,8 +196,10 @@ namespace boarai::hardware
           result.successful &= on_driver_port_changed(param.as_int());
         }
         break;
+      case parameter::wheel_spacing:
       case parameter::maximum_linear_velocity:
-      case parameter::maximum_angular_velocity:
+        result.successful &= param.as_double() > 0.0;
+        break;
       case parameter::END_OF_ENUM:
         break;
       };

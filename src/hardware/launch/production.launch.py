@@ -19,6 +19,8 @@ TANK_DRIVE: ComposableNode = ComposableNode(
         "driver_enabled": True,
         "driver_address": "192.168.1.20",
         "driver_port": 502,
+        "wheel_spacing": 0.51,
+        "maximum_linear_velocity": 2.9,
     }]
 )
 
