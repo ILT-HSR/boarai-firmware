@@ -43,10 +43,10 @@ namespace boarai::hardware::roboteq
 
       auto read_value = std::get<0>(response);
       auto bytes = std::array{
-          static_cast<std::byte>(read_value[0].to_ulong() & 0xff),
           static_cast<std::byte>(read_value[0].to_ulong() >> 8 & 0xff),
-          static_cast<std::byte>(read_value[1].to_ulong() & 0xff),
+          static_cast<std::byte>(read_value[0].to_ulong() & 0xff),
           static_cast<std::byte>(read_value[1].to_ulong() >> 8 & 0xff),
+          static_cast<std::byte>(read_value[1].to_ulong() & 0xff),
       };
 
       return impl::to<ResultType>(bytes, std::make_index_sequence<sizeof(ResultType)>{});
