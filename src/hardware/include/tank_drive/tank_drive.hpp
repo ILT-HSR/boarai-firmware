@@ -69,10 +69,14 @@ namespace boarai::hardware
     auto on_get_maximum_angular_velocity_request(services::GetMaximumAngularVelocity::Request::SharedPtr request,
                                                  services::GetMaximumAngularVelocity::Response::SharedPtr response) -> void;
 
+    auto on_voltage_update_timer_expired() -> void;
+
     rclcpp::Service<services::SetDriveVelocity>::SharedPtr m_drive_velocity_service;
     rclcpp::Service<services::GetMaximumAngularVelocity>::SharedPtr m_get_maximumum_angular_velocity_service;
     rclcpp::Subscription<messages::Polar2D>::SharedPtr m_subscription;
     OnSetParametersCallbackHandle::SharedPtr m_on_parameters_changed_handler;
+
+    rclcpp::TimerBase::SharedPtr m_voltage_update_timer;
 
     std::optional<modbus::connection> m_driver_connection{};
     std::optional<modbus::client> m_driver_client{};

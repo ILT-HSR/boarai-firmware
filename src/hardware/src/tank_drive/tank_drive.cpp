@@ -81,6 +81,7 @@ namespace boarai::hardware
         HARDWARE_SERVICE_GET_MAXIMUM_ANGULAR_VELOCITY,
         std::bind(&tank_drive::on_get_maximum_angular_velocity_request, this, _1, _2));
     m_on_parameters_changed_handler = add_on_set_parameters_callback(std::bind(&tank_drive::on_parameters_changed, this, _1));
+    m_voltage_update_timer = create_wall_timer(1s, std::bind(&tank_drive::on_voltage_update_timer_expired, this));
   }
 
   auto tank_drive::declare_parameters() -> void
@@ -280,6 +281,25 @@ namespace boarai::hardware
       -> void
   {
     response->velocity = maximum_angular_velocity();
+  }
+
+  auto tank_drive::on_voltage_update_timer_expired() -> void
+  {
+    if (m_motor_driver)
+    {
+      std::visit(
+          [this](auto value) {
+            if constexpr (std::is_same_v<std::error_code, decltype(value)>)
+            {
+              log_error("failed to read battery voltage: {}", value.message());
+            }
+            else
+            {
+              log_info("current battery voltage: {} dV", value);
+            }
+          },
+          m_motor_driver->read_volts_battery());
+    }
   }
 
 }  // namespace boarai::hardware

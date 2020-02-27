@@ -1,16 +1,15 @@
 #ifndef BOARAI_HARDWARE_ROBOTEQ_QUERIES_HPP
 #define BOARAI_HARDWARE_ROBOTEQ_QUERIES_HPP
 
+#include "roboteq/query.hpp"
+
 #include <cstdint>
 
-namespace boarai::hardware::roboteq
+namespace boarai::hardware::roboteq::queries
 {
-  enum struct query : std::uint16_t
-  {
-    // TODO(smiracco): Add constants for queries
-    read_some_stuff = 0xface,
-  };
 
-}  // namespace boarai::hardware::roboteq
+  auto constexpr battery_voltage = query<std::uint16_t>{0x210d};
+
+}  // namespace boarai::hardware::roboteq::queries
 
 #endif

@@ -123,21 +123,6 @@ namespace boarai::hardware::roboteq
     /**
      * @internal
      *
-     * Calculate the MODBUS address of the command for a given index
-     *
-     * @param index The index of the command (e.g. a motor channel)
-     * @return The indexed MODBUS address of the command
-     */
-    auto constexpr modbus_address(std::uint16_t index) const noexcept -> modbus::address
-    {
-      auto base = static_cast<std::uint32_t>(m_can_id) << 5;
-      auto indexed = base | index;
-      return modbus::address{static_cast<std::uint16_t>(indexed & 0xffff)};
-    }
-
-    /**
-     * @internal
-     *
      * Check if the command requires an argument
      *
      * @return @p true iff. the command requires an argument, @p false otherwise

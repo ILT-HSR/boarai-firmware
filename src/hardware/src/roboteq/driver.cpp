@@ -2,6 +2,7 @@
 
 #include "roboteq/channel.hpp"
 #include "roboteq/commands.hpp"
+#include "roboteq/queries.hpp"
 
 #include <modbuscpp/client.hpp>
 
@@ -45,4 +46,10 @@ namespace boarai::hardware::roboteq
   {
     return commands::set_motor_command(m_client, value, static_cast<std::uint16_t>(channel));
   }
+
+  auto driver::read_volts_battery() -> std::variant<std::uint16_t, std::error_code>
+  {
+    return queries::battery_voltage(m_client, 2);
+  }
+
 }  // namespace boarai::hardware::roboteq
