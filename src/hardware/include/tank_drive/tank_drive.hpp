@@ -75,14 +75,16 @@ namespace boarai::hardware
                                      services::GetMaximumAngularVelocity::Response::SharedPtr response) -> void;
 
     auto on_voltages_update_timer_expired() -> void;
-    auto on_voltages_updated(std::int16_t battery_voltage) -> void;
+    auto on_drive_velocity_update_timer_expired() -> void;
 
     rclcpp::Service<services::SetDriveVelocity>::SharedPtr m_drive_velocity_service{};
     rclcpp::Service<services::GetMaximumAngularVelocity>::SharedPtr m_angular_velocity_service{};
 
     rclcpp::TimerBase::SharedPtr m_voltages_update_timer{};
+    rclcpp::TimerBase::SharedPtr m_drive_velocity_update_timer{};
 
     rclcpp::Publisher<messages::Voltage>::SharedPtr m_battery_voltages_publisher{};
+    rclcpp::Publisher<messages::PolarVelocity>::SharedPtr m_drive_velocity_publisher{};
 
     OnSetParametersCallbackHandle::SharedPtr m_parameter_change_handler{};
 

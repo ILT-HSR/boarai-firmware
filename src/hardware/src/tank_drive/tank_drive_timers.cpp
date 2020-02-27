@@ -14,6 +14,8 @@ namespace boarai::hardware
   auto tank_drive::start_timers() -> void
   {
     m_voltages_update_timer = create_wall_timer(1s, std::bind(&tank_drive::on_voltages_update_timer_expired, this));
+    m_drive_velocity_update_timer =
+        create_wall_timer(10ms, std::bind(&tank_drive::on_drive_velocity_update_timer_expired, this));
   }
 
   auto tank_drive::on_voltages_update_timer_expired() -> void
@@ -28,10 +30,37 @@ namespace boarai::hardware
             }
             else
             {
-              on_voltages_updated(value);
+              auto msg = messages::Voltage{};
+              msg.volts = value / 10.0f;
+              m_battery_voltages_publisher->publish(msg);
             }
           },
           m_motor_driver->read_volts_battery());
+    }
+  }
+
+  auto tank_drive::on_drive_velocity_update_timer_expired() -> void
+  {
+    if (m_motor_driver)
+    {
+      auto throttle = m_motor_driver->read_brushless_motor_speed(roboteq::channel::velocity);
+      auto steering = m_motor_driver->read_brushless_motor_speed(roboteq::channel::steering);
+
+      if (!throttle)
+      {
+        log_error("failed to read throttle: {}", std::get<std::error_code>(throttle).message());
+      }
+      else if (!steering)
+      {
+        log_error("failed to read steering: {}", std::get<std::error_code>(steering).message());
+      }
+      else
+      {
+        auto msg = messages::PolarVelocity{};
+        msg.value.r = maximum_linear_velocity() * 1000 / *throttle;
+        msg.value.phi = maximum_angular_velocity() * 1000 / *steering;
+        m_drive_velocity_publisher->publish(msg);
+      }
     }
   }
 

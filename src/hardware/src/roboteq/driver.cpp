@@ -52,4 +52,9 @@ namespace boarai::hardware::roboteq
     return queries::battery_voltage(m_client, 2);
   }
 
+  auto driver::read_brushless_motor_speed(channel channel) -> std::variant<std::int16_t, std::error_code>
+  {
+    return queries::brushless_motor_speed(m_client, static_cast<std::uint16_t>(channel));
+  }
+
 }  // namespace boarai::hardware::roboteq

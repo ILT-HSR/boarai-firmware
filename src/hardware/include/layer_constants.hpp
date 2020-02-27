@@ -10,6 +10,7 @@ namespace boarai::hardware
   auto constexpr HARDWARE_SERVICE_GET_MAXIMUM_ANGULAR_VELOCITY = "get_maximum_angular_velocity";
   auto constexpr HARDWARE_TOPIC_GLOBAL_POSITION = "global_position";
   auto constexpr HARDWARE_TOPIC_BATTERY_VOLTAGE = "battery_voltage";
+  auto constexpr HARDWARE_TOPIC_DRIVE_VELOCITY = "drive_velocity";
 
 }  // namespace boarai::hardware
 

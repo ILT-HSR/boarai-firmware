@@ -66,6 +66,7 @@ namespace boarai::hardware
   auto tank_drive::start_publishers() -> void
   {
     m_battery_voltages_publisher = create_publisher<messages::Voltage>(HARDWARE_TOPIC_BATTERY_VOLTAGE, 10);
+    m_drive_velocity_publisher = create_publisher<messages::PolarVelocity>(HARDWARE_TOPIC_DRIVE_VELOCITY, 10);
   }
 
   auto tank_drive::initialize_driver(std::string address, std::uint16_t port) -> void
@@ -101,15 +102,6 @@ namespace boarai::hardware
     assert(wheel_spacing() > 0.0);
     auto turn_circumference = wheel_spacing() * M_PI;
     return 360.0 * maximum_linear_velocity() / turn_circumference;
-  }
-
-  auto tank_drive::on_voltages_updated(std::int16_t battery_voltage) -> void
-  {
-    log_info("current battery voltage: {}dV", battery_voltage);
-
-    auto msg = messages::Voltage{};
-    msg.volts = battery_voltage / 10.0f;
-    m_battery_voltages_publisher->publish(msg);
   }
 
 }  // namespace boarai::hardware

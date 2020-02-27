@@ -75,6 +75,14 @@ namespace boarai::hardware::roboteq
      */
     auto read_volts_battery() -> std::variant<std::uint16_t, std::error_code>;
 
+    /**
+     * Read BL Motor Speed as 1/1000 of Max RPM
+     * RoboteQ query BSR
+     *
+     * @param channel The target motor channel
+     */
+    auto read_brushless_motor_speed(channel channel) -> std::variant<std::int16_t, std::error_code>;
+
   private:
     modbus::client & m_client;
   };
