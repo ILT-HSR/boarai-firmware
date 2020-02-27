@@ -7,11 +7,11 @@
 namespace boarai::estimation
 {
 
-  struct position_estimator : fmt_node
+  struct velocity_estimator : fmt_node
   {
     using super = rclcpp::Node;
 
-    explicit position_estimator(rclcpp::NodeOptions const & options);
+    explicit velocity_estimator(rclcpp::NodeOptions const & options);
   };
 
 }  // namespace boarai::estimation

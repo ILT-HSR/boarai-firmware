@@ -11,6 +11,7 @@ include("CompilerWarnings")
 
 find_package("ament_cmake" REQUIRED)
 find_package("boarai_support" REQUIRED)
+find_package("boarai_hardware" REQUIRED)
 find_package("rclcpp_components" REQUIRED)
 find_package("rclcpp" REQUIRED)
 find_package("std_msgs" REQUIRED)
@@ -38,7 +39,6 @@ ament_target_dependencies("position_estimator"
   "boarai_support"
   "rclcpp"
   "rclcpp_components"
-  "std_msgs"
 )
 
 target_compile_features("position_estimator" PUBLIC
@@ -51,11 +51,40 @@ set_target_properties("position_estimator" PROPERTIES
   INTERPROCEDURAL_OPTIMIZATION ON
 )
 
+#=== velocity_estimator Node ===#
+
+add_library("velocity_estimator" SHARED
+  "src/velocity_estimator/velocity_estimator.cpp"
+)
+
+target_include_directories("velocity_estimator" PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+ament_target_dependencies("velocity_estimator"
+  "boarai_hardware"
+  "boarai_support"
+  "rclcpp_components"
+  "rclcpp"
+)
+
+target_compile_features("velocity_estimator" PUBLIC
+  "cxx_std_17"
+)
+
+set_target_properties("velocity_estimator" PROPERTIES
+  CXX_STANDARD_REQUIRED ON
+  CXX_EXTENSIONS OFF
+  INTERPROCEDURAL_OPTIMIZATION ON
+)
+
 #=== Package Installation ===#
 
 install(TARGETS
   # nodes
   "position_estimator"
+  "velocity_estimator"
 
   EXPORT "boarai_estimation"
   LIBRARY DESTINATION "lib"

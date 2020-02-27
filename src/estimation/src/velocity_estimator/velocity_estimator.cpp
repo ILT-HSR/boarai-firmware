@@ -1,4 +1,4 @@
-#include "position_estimator/position_estimator.hpp"
+#include "velocity_estimator/velocity_estimator.hpp"
 
 #include "estimation/layer_interface.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -7,9 +7,9 @@
 namespace boarai::estimation
 {
 
-  auto constexpr node_name{"position_estimator"};
+  auto constexpr node_name{"velocity_estimator"};
 
-  position_estimator::position_estimator(rclcpp::NodeOptions const & options)
+  velocity_estimator::velocity_estimator(rclcpp::NodeOptions const & options)
       : fmt_node{node_name, ros_namespace, options}
   {
     log_info("position_estimator starting up");
@@ -17,4 +17,4 @@ namespace boarai::estimation
 
 }  // namespace boarai::estimation
 
-RCLCPP_COMPONENTS_REGISTER_NODE(boarai::estimation::position_estimator)
+RCLCPP_COMPONENTS_REGISTER_NODE(boarai::estimation::velocity_estimator)
