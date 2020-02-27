@@ -11,6 +11,13 @@ POSITION_ESTIMATOR: ComposableNode = ComposableNode(
     parameters=[]
 )
 
+VELOCITY_ESTIMATOR: ComposableNode = ComposableNode(
+    package='boarai_estimation',
+    node_plugin='boarai::estimation::velocity_estimator',
+    node_name='velocity_estimator',
+    parameters=[]
+)
+
 
 def generate_launch_description() -> launch.LaunchDescription:
     container = ComposableNodeContainer(
@@ -19,7 +26,8 @@ def generate_launch_description() -> launch.LaunchDescription:
         package='rclcpp_components',
         node_executable='component_container',
         composable_node_descriptions=[
-            POSITION_ESTIMATOR,           
+            POSITION_ESTIMATOR,
+            VELOCITY_ESTIMATOR,
         ],
         output='screen',
         emulate_tty=True,

@@ -101,6 +101,7 @@ install(DIRECTORY
 #=== Ament Packaging ===#
 
 rclcpp_components_register_nodes("position_estimator" "boarai::estimation::position_estimator")
+rclcpp_components_register_nodes("velocity_estimator" "boarai::estimation::velocity_estimator")
 
 ament_export_interfaces("boarai_estimation" HAS_LIBRARY_TARGET)
 
