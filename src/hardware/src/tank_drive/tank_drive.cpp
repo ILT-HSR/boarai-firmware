@@ -55,6 +55,7 @@ namespace boarai::hardware
         m_motor_driver->set_motor_command(roboteq::channel::velocity, 0);
         m_motor_driver->set_motor_command(roboteq::channel::steering, 0);
         start_services();
+        start_publishers();
         start_timers();
       }
     }
