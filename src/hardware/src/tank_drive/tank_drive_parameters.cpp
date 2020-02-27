@@ -10,56 +10,56 @@
 
 using namespace std::string_literals;
 
-auto const DEFAULT_DRIVER_ADDRESS{"192.168.1.20"s};
-auto const DEFAULT_DRIVER_PORT{static_cast<std::uint16_t>(502)};
-auto const DEFAULT_DRIVER_ENABLED{true};
-auto const DEFAULT_WHEEL_SPACING{0.0};
-auto const DEFAULT_MAXIMUM_LINEAR_VELOCITY{1.0};
+auto const default_driver_address{"192.168.1.20"s};
+auto const default_driver_port{static_cast<std::uint16_t>(502)};
+auto const default_driver_enabled{true};
+auto const default_wheel_spacing{0.0};
+auto const default_maximum_linear_velocity{1.0};
 
 namespace boarai::hardware
 {
 
   auto tank_drive::declare_parameters() -> void
   {
-    declare_parameter(to_string(parameter::driver_address), DEFAULT_DRIVER_ADDRESS);
-    declare_parameter(to_string(parameter::driver_port), DEFAULT_DRIVER_PORT);
-    declare_parameter(to_string(parameter::driver_enabled), DEFAULT_DRIVER_ENABLED);
-    declare_parameter(to_string(parameter::wheel_spacing), DEFAULT_WHEEL_SPACING);
-    declare_parameter(to_string(parameter::maximum_linear_velocity), DEFAULT_MAXIMUM_LINEAR_VELOCITY);
+    declare_parameter(to_string(parameter::driver_address), default_driver_address);
+    declare_parameter(to_string(parameter::driver_port), default_driver_port);
+    declare_parameter(to_string(parameter::driver_enabled), default_driver_enabled);
+    declare_parameter(to_string(parameter::wheel_spacing), default_wheel_spacing);
+    declare_parameter(to_string(parameter::maximum_linear_velocity), default_maximum_linear_velocity);
   }
 
   auto tank_drive::driver_enabled() -> bool
   {
     auto result{false};
-    get_parameter_or(to_string(parameter::driver_enabled), result, DEFAULT_DRIVER_ENABLED);
+    get_parameter_or(to_string(parameter::driver_enabled), result, default_driver_enabled);
     return result;
   }
 
   auto tank_drive::driver_address() -> std::string
   {
     auto result{""s};
-    get_parameter_or(to_string(parameter::driver_address), result, std::string{DEFAULT_DRIVER_ADDRESS});
+    get_parameter_or(to_string(parameter::driver_address), result, std::string{default_driver_address});
     return result;
   }
 
   auto tank_drive::driver_port() -> std::uint16_t
   {
     auto result = std::uint16_t{};
-    get_parameter_or(to_string(parameter::driver_port), result, DEFAULT_DRIVER_PORT);
+    get_parameter_or(to_string(parameter::driver_port), result, default_driver_port);
     return result;
   }
 
   auto tank_drive::wheel_spacing() -> double
   {
     auto result{0.0};
-    get_parameter_or(to_string(parameter::wheel_spacing), result, DEFAULT_WHEEL_SPACING);
+    get_parameter_or(to_string(parameter::wheel_spacing), result, default_wheel_spacing);
     return result;
   }
 
   auto tank_drive::maximum_linear_velocity() -> double
   {
     auto result{0.0};
-    get_parameter_or(to_string(parameter::maximum_linear_velocity), result, DEFAULT_MAXIMUM_LINEAR_VELOCITY);
+    get_parameter_or(to_string(parameter::maximum_linear_velocity), result, default_maximum_linear_velocity);
     return result;
   }
 

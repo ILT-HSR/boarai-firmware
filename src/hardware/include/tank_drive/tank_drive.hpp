@@ -1,6 +1,7 @@
 #ifndef BOARAI_HARDWARE_MOTOR_CONTROL_HPP
 #define BOARAI_HARDWARE_MOTOR_CONTROL_HPP
 
+#include "hardware/layer_interface.hpp"
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
 #include "rclcpp/node.hpp"
 #include "rclcpp/node_options.hpp"
@@ -23,8 +24,6 @@
 
 namespace boarai::hardware
 {
-
-  auto constexpr TANK_DRIVE_NODE_NAME{"tank_drive"};
 
   struct tank_drive : fmt_node
   {
@@ -69,22 +68,22 @@ namespace boarai::hardware
     auto on_driver_port_changed(std::int64_t new_value) -> bool;
     auto on_wheel_spacing_changed(double new_value) -> bool;
 
-    auto on_drive_velocity_request(services::SetDriveVelocity::Request::SharedPtr request,
-                                   services::SetDriveVelocity::Response::SharedPtr response) -> void;
-    auto on_angular_velocity_request(services::GetMaximumAngularVelocity::Request::SharedPtr request,
-                                     services::GetMaximumAngularVelocity::Response::SharedPtr response) -> void;
+    auto on_drive_velocity_request(service::set_drive_velocity_t::Request::SharedPtr request,
+                                   service::set_drive_velocity_t::Response::SharedPtr response) -> void;
+    auto on_angular_velocity_request(service::get_maximum_angular_velocity_t::Request::SharedPtr request,
+                                     service::get_maximum_angular_velocity_t::Response::SharedPtr response) -> void;
 
     auto on_voltages_update_timer_expired() -> void;
     auto on_drive_velocity_update_timer_expired() -> void;
 
-    rclcpp::Service<services::SetDriveVelocity>::SharedPtr m_drive_velocity_service{};
-    rclcpp::Service<services::GetMaximumAngularVelocity>::SharedPtr m_angular_velocity_service{};
+    rclcpp::Service<service::set_drive_velocity_t>::SharedPtr m_drive_velocity_service{};
+    rclcpp::Service<service::get_maximum_angular_velocity_t>::SharedPtr m_angular_velocity_service{};
 
     rclcpp::TimerBase::SharedPtr m_voltages_update_timer{};
     rclcpp::TimerBase::SharedPtr m_drive_velocity_update_timer{};
 
-    rclcpp::Publisher<messages::Voltage>::SharedPtr m_battery_voltages_publisher{};
-    rclcpp::Publisher<messages::PolarVelocity>::SharedPtr m_drive_velocity_publisher{};
+    rclcpp::Publisher<topic::battery_voltage_t>::SharedPtr m_battery_voltages_publisher{};
+    rclcpp::Publisher<topic::drive_velocity_t>::SharedPtr m_drive_velocity_publisher{};
 
     OnSetParametersCallbackHandle::SharedPtr m_parameter_change_handler{};
 

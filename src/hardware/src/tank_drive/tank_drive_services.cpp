@@ -1,4 +1,4 @@
-#include "layer_constants.hpp"
+#include "hardware/layer_interface.hpp"
 #include "roboteq/channel.hpp"
 #include "support/services.hpp"
 #include "tank_drive/tank_drive.hpp"
@@ -13,16 +13,18 @@ namespace boarai::hardware
 
   auto tank_drive::start_services() -> void
   {
-    m_drive_velocity_service =
-        create_service<services::SetDriveVelocity>(HARDWARE_SERVICE_SET_DRIVE_VELOCITY,
-                                                   std::bind(&tank_drive::on_drive_velocity_request, this, _1, _2));
-    m_angular_velocity_service =
-        create_service<services::GetMaximumAngularVelocity>(HARDWARE_SERVICE_GET_MAXIMUM_ANGULAR_VELOCITY,
-                                                            std::bind(&tank_drive::on_angular_velocity_request, this, _1, _2));
+    // clang-format off
+    m_drive_velocity_service = create_service<service::set_drive_velocity_t>(
+        service::set_drive_velocity,
+        std::bind(&tank_drive::on_drive_velocity_request, this, _1, _2));
+    m_angular_velocity_service = create_service<service::get_maximum_angular_velocity_t>(
+        service::get_maximum_angular_velocity,
+        std::bind(&tank_drive::on_angular_velocity_request, this, _1, _2));
+    // clang-format on
   }
 
-  auto tank_drive::on_drive_velocity_request(services::SetDriveVelocity::Request::SharedPtr request,
-                                             services::SetDriveVelocity::Response::SharedPtr) -> void
+  auto tank_drive::on_drive_velocity_request(service::set_drive_velocity_t::Request::SharedPtr request,
+                                             service::set_drive_velocity_t::Response::SharedPtr) -> void
   {
     auto [linear_velocity, angular_velocity] = request->velocity.value;
 
@@ -41,8 +43,8 @@ namespace boarai::hardware
     }
   }
 
-  auto tank_drive::on_angular_velocity_request(services::GetMaximumAngularVelocity::Request::SharedPtr,
-                                               services::GetMaximumAngularVelocity::Response::SharedPtr response) -> void
+  auto tank_drive::on_angular_velocity_request(service::get_maximum_angular_velocity_t::Request::SharedPtr,
+                                               service::get_maximum_angular_velocity_t::Response::SharedPtr response) -> void
   {
     response->velocity = maximum_angular_velocity();
   }

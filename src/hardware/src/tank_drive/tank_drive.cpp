@@ -1,6 +1,6 @@
 #include "tank_drive/tank_drive.hpp"
 
-#include "layer_constants.hpp"
+#include "hardware/layer_interface.hpp"
 #include "rcl_interfaces/msg/parameter_descriptor.hpp"
 #include "rcl_interfaces/msg/parameter_type.hpp"
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
@@ -25,6 +25,8 @@ using namespace std::chrono_literals;
 using namespace modbus::modbus_literals;
 using namespace std::placeholders;
 
+auto constexpr node_name{"tank_drive"};
+
 auto static make_context(std::string address, std::uint16_t port) -> modbus::context
 {
   auto tcp_context = modbus::tcp_context{address, port};
@@ -38,7 +40,7 @@ namespace boarai::hardware
 {
 
   tank_drive::tank_drive(rclcpp::NodeOptions const & options)
-      : fmt_node{TANK_DRIVE_NODE_NAME, LAYER_NAMESPACE, options}
+      : fmt_node{node_name, ros_namespace, options}
 
   {
     declare_parameters();
@@ -65,8 +67,8 @@ namespace boarai::hardware
 
   auto tank_drive::start_publishers() -> void
   {
-    m_battery_voltages_publisher = create_publisher<messages::Voltage>(HARDWARE_TOPIC_BATTERY_VOLTAGE, 10);
-    m_drive_velocity_publisher = create_publisher<messages::PolarVelocity>(HARDWARE_TOPIC_DRIVE_VELOCITY, 10);
+    m_battery_voltages_publisher = create_publisher<topic::battery_voltage_t>(topic::battery_voltage, 10);
+    m_drive_velocity_publisher = create_publisher<topic::drive_velocity_t>(topic::drive_velocity, 10);
   }
 
   auto tank_drive::initialize_driver(std::string address, std::uint16_t port) -> void

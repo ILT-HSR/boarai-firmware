@@ -136,6 +136,7 @@ ament_target_dependencies("tank_drive"
   "boarai_support"
   "rclcpp"
   "rclcpp_components"
+  "sensor_msgs"
   "std_msgs"
 )
 
@@ -204,6 +205,11 @@ install(TARGETS
 install(DIRECTORY
   "launch"
   DESTINATION "share/${PROJECT_NAME}"
+)
+
+install(DIRECTORY
+  "include/hardware"
+  DESTINATION "include"
 )
 
 #=== Ament Packaging ===#

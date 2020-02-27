@@ -1,3 +1,4 @@
+#include "hardware/layer_interface.hpp"
 #include "tank_drive/tank_drive.hpp"
 
 #include <chrono>
@@ -30,7 +31,7 @@ namespace boarai::hardware
             }
             else
             {
-              auto msg = messages::Voltage{};
+              auto msg = topic::battery_voltage_t{};
               msg.volts = value / 10.0f;
               m_battery_voltages_publisher->publish(msg);
             }
@@ -58,7 +59,7 @@ namespace boarai::hardware
       {
         auto throttle_factor = (*channel_one + *channel_two) / 2;
         auto steering_factor = *channel_one - throttle_factor;
-        auto msg = messages::PolarVelocity{};
+        auto msg = topic::drive_velocity_t{};
         msg.value.r = maximum_linear_velocity() / 1000 * throttle_factor;
         msg.value.phi = maximum_angular_velocity() / 1000 * steering_factor;
         m_drive_velocity_publisher->publish(msg);

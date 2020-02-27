@@ -1,7 +1,7 @@
 #include "gps_provider/gps_provider.hpp"
 
 #include "gps_provider/gpsmm_adapter.hpp"
-#include "layer_constants.hpp"
+#include "hardware/layer_interface.hpp"
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
 #include "rclcpp/clock.hpp"
 #include "rclcpp/parameter.hpp"
@@ -19,11 +19,16 @@
 
 using namespace std::literals;
 
+auto constexpr node_name{"gps_provider"};
+
+auto constexpr default_daemon_host{"localhost"};
+auto constexpr default_daemon_port{static_cast<std::uint16_t>(2947)};
+
 namespace boarai::hardware
 {
 
   gps_provider::gps_provider(rclcpp::NodeOptions const & options)
-      : fmt_node{GPS_PROVIDER_NODE_NAME, LAYER_NAMESPACE, options}
+      : fmt_node{node_name, ros_namespace, options}
       , m_client{}
       , m_time_source_initialized{}
       , m_time_source{}
@@ -44,7 +49,7 @@ namespace boarai::hardware
       log_error("failed to connect to the gps daemon.");
     }
 
-    m_position_publisher = create_publisher<sensor_msgs::msg::NavSatFix>(HARDWARE_TOPIC_GLOBAL_POSITION, 10);
+    m_position_publisher = create_publisher<topic::global_position_t>(topic::global_position, 10);
   }
 
   auto gps_provider::on_new_data(gps_data_t data) -> void
@@ -89,8 +94,8 @@ namespace boarai::hardware
 
   auto gps_provider::declare_parameters() -> void
   {
-    declare_parameter(to_string(parameter::daemon_host), DEFAULT_DAEMON_HOST);
-    declare_parameter(to_string(parameter::daemon_port), DEFAULT_DAEMON_PORT);
+    declare_parameter(to_string(parameter::daemon_host), default_daemon_host);
+    declare_parameter(to_string(parameter::daemon_port), default_daemon_port);
   }
 
   auto gps_provider::on_parameters_changed(std::vector<rclcpp::Parameter> new_parameters)
@@ -149,14 +154,14 @@ namespace boarai::hardware
   auto gps_provider::daemon_host() -> std::string
   {
     auto result{""s};
-    get_parameter_or(to_string(parameter::daemon_host), result, std::string{DEFAULT_DAEMON_HOST});
+    get_parameter_or(to_string(parameter::daemon_host), result, std::string{default_daemon_host});
     return result;
   }
 
   auto gps_provider::daemon_port() -> std::uint16_t
   {
     auto result = std::uint16_t{};
-    get_parameter_or(to_string(parameter::daemon_port), result, DEFAULT_DAEMON_PORT);
+    get_parameter_or(to_string(parameter::daemon_port), result, default_daemon_port);
     return result;
   }
 

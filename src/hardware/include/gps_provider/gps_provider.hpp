@@ -3,6 +3,7 @@
 
 #include "gps_provider/gpsd_client.hpp"
 #include "gps_provider/gpsmm_adapter.hpp"
+#include "hardware/layer_interface.hpp"
 #include "rclcpp/clock.hpp"
 #include "rclcpp/parameter.hpp"
 #include "rclcpp/time_source.hpp"
@@ -18,13 +19,8 @@
 #include <string>
 #include <vector>
 
-auto constexpr DEFAULT_DAEMON_HOST{"localhost"};
-auto constexpr DEFAULT_DAEMON_PORT{static_cast<std::uint16_t>(2947)};
-
 namespace boarai::hardware
 {
-
-  auto constexpr GPS_PROVIDER_NODE_NAME{"gps_provider"};
 
   struct gps_provider
       : fmt_node
@@ -62,7 +58,7 @@ namespace boarai::hardware
     rclcpp::TimeSource m_time_source;
     rclcpp::Clock::SharedPtr m_clock;
 
-    rclcpp::Publisher<sensor_msgs::msg::NavSatFix>::SharedPtr m_position_publisher;
+    rclcpp::Publisher<topic::global_position_t>::SharedPtr m_position_publisher;
     std::mutex m_position_update_mutex;
   };
 
