@@ -24,7 +24,7 @@ namespace boarai::estimation
   auto velocity_estimator::start_subscriptions() -> void
   {
     m_drive_velocity_subscription = create_subscription<hardware::topic::drive_velocity_t>(
-        std::string{hardware::ros_namespace} + hardware::topic::drive_velocity,
+        std::string{hardware::ros_namespace} + "/" + hardware::topic::drive_velocity,
         10,
         std::bind(&velocity_estimator::on_drive_velocity_update, this, _1));
   }
