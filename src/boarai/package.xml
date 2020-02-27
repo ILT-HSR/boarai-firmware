@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>boarai</name>
+
+  <version>0.1.0</version>
+
+  <description>boarAI Root Package</description>
+
+  <maintainer email="felix.morgner@hsr.ch">Felix Morgner</maintainer>
+  <maintainer email="sergio.miracco@hsr.ch">Sergio Miracco</maintainer>
+  <maintainer email="benjamin.eggimann@hsr.ch">Benjamin Eggimann</maintainer>
+
+  <author email="felix.morgner@hsr.ch">Felix Morgner</author>
+  <author email="sergio.miracco@hsr.ch">Sergio Miracco</author>
+  <author email="benjamin.eggimann@hsr.ch">Benjamin Eggimann</author>
+
+  <license file="../../LICENSE">BSD-3-Clause</license>
+
+  <url>https://github.com/ILT-HSR/boarai-firmware</url>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <exec_depend>boarai_control</exec_depend>
+  <exec_depend>boarai_estimation</exec_depend>
+  <exec_depend>boarai_hardware</exec_depend>
+  <exec_depend>boarai_interface</exec_depend>
+  <exec_depend>boarai_intelligence</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

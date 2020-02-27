@@ -1,5 +1,7 @@
 #include "roboteq/command.hpp"
 
+#include "roboteq/modbus_address.hpp"
+
 #include <string>
 #include <system_error>
 
@@ -65,6 +67,6 @@ namespace boarai::hardware::roboteq
       -> std::error_code
   {
     auto [high_word, low_word] = argument;
-    return client.holding_registers(modbus_address(index), 2) = {high_word, low_word};
+    return client.holding_registers(modbus_address(m_can_id, index), 2) = {high_word, low_word};
   }
 }  // namespace boarai::hardware::roboteq

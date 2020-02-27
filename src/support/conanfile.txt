@@ -1,0 +1,8 @@
+[requires]
+fmt/[~=6.1.0]
+
+[options]
+fmt:shared=True
+
+[imports]
+lib, *.so* -> conan_imported_libs

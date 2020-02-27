@@ -5,7 +5,9 @@
 #include "roboteq/channel.hpp"
 #include "roboteq/position.hpp"
 
+#include <cstdint>
 #include <system_error>
+#include <variant>
 
 namespace boarai::hardware::roboteq
 {
@@ -66,6 +68,20 @@ namespace boarai::hardware::roboteq
      * @param value The desired counts to set the hall sensor to
      */
     auto set_motor_command(channel channel, std::int32_t value) -> std::error_code;
+
+    /**
+     * Read Volts (battery)
+     * RoboteQ query V (index 2)
+     */
+    auto read_volts_battery() -> std::variant<std::uint16_t, std::error_code>;
+
+    /**
+     * Read BL Motor Speed as 1/1000 of Max RPM
+     * RoboteQ query BSR
+     *
+     * @param channel The target motor channel
+     */
+    auto read_brushless_motor_speed(channel channel) -> std::variant<std::int16_t, std::error_code>;
 
   private:
     modbus::client & m_client;
