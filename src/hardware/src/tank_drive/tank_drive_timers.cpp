@@ -15,7 +15,7 @@ namespace boarai::hardware
   {
     m_voltages_update_timer = create_wall_timer(1s, std::bind(&tank_drive::on_voltages_update_timer_expired, this));
     m_drive_velocity_update_timer =
-        create_wall_timer(10ms, std::bind(&tank_drive::on_drive_velocity_update_timer_expired, this));
+        create_wall_timer(100ms, std::bind(&tank_drive::on_drive_velocity_update_timer_expired, this));
   }
 
   auto tank_drive::on_voltages_update_timer_expired() -> void
@@ -43,22 +43,24 @@ namespace boarai::hardware
   {
     if (m_motor_driver)
     {
-      auto throttle = m_motor_driver->read_brushless_motor_speed(roboteq::channel::velocity);
-      auto steering = m_motor_driver->read_brushless_motor_speed(roboteq::channel::steering);
+      auto channel_one = m_motor_driver->read_brushless_motor_speed(roboteq::channel::_1);
+      auto channel_two = m_motor_driver->read_brushless_motor_speed(roboteq::channel::_2);
 
-      if (!throttle)
+      if (!channel_one)
       {
-        log_error("failed to read throttle: {}", std::get<std::error_code>(throttle).message());
+        log_error("failed to read channel_one: {}", std::get<std::error_code>(channel_one).message());
       }
-      else if (!steering)
+      else if (!channel_two)
       {
-        log_error("failed to read steering: {}", std::get<std::error_code>(steering).message());
+        log_error("failed to read channel_two: {}", std::get<std::error_code>(channel_two).message());
       }
       else
       {
+        auto throttle_factor = (*channel_one + *channel_two) / 2;
+        auto steering_factor = *channel_one - throttle_factor;
         auto msg = messages::PolarVelocity{};
-        msg.value.r = maximum_linear_velocity() * 1000 / *throttle;
-        msg.value.phi = maximum_angular_velocity() * 1000 / *steering;
+        msg.value.r = maximum_linear_velocity() / 1000 * throttle_factor;
+        msg.value.phi = maximum_angular_velocity() / 1000 * steering_factor;
         m_drive_velocity_publisher->publish(msg);
       }
     }
