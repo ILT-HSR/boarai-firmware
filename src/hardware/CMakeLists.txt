@@ -115,8 +115,11 @@ set_target_properties("roboteq" PROPERTIES
 #=== tank_drive Node ===#
 
 add_library("tank_drive" SHARED
-  "src/tank_drive/tank_drive.cpp"
   "src/tank_drive/tank_drive_parameter_enum.cpp"
+  "src/tank_drive/tank_drive_parameters.cpp"
+  "src/tank_drive/tank_drive_services.cpp"
+  "src/tank_drive/tank_drive_timers.cpp"
+  "src/tank_drive/tank_drive.cpp"
 )
 
 target_include_directories("tank_drive" PUBLIC

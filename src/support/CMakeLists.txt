@@ -43,6 +43,7 @@ ament_target_dependencies("support"
 rosidl_generate_interfaces("${PROJECT_NAME}"
   "msg/Polar2D.msg"
   "msg/PolarVelocity.msg"
+  "msg/Voltage.msg"
   "srv/SetDriveVelocity.srv"
   "srv/GetMaximumAngularVelocity.srv"
   DEPENDENCIES builtin_interfaces

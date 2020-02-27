@@ -3,6 +3,7 @@
 
 #include "boarai_support/msg/polar2_d.hpp"
 #include "boarai_support/msg/polar_velocity.hpp"
+#include "boarai_support/msg/voltage.hpp"
 
 namespace boarai
 {

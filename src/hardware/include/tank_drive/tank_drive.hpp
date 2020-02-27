@@ -2,7 +2,11 @@
 #define BOARAI_HARDWARE_MOTOR_CONTROL_HPP
 
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/parameter.hpp"
+#include "rclcpp/service.hpp"
+#include "rclcpp/timer.hpp"
 #include "roboteq/driver.hpp"
 #include "support/enum_utility.hpp"
 #include "support/fmt_node.hpp"
@@ -12,14 +16,10 @@
 
 #include <modbuscpp/client.hpp>
 #include <modbuscpp/connection.hpp>
-#include <modbuscpp/context.hpp>
-#include <modbuscpp/tcp_context.hpp>
 
 #include <cstdint>
 #include <optional>
 #include <string>
-#include <type_traits>
-#include <utility>
 
 namespace boarai::hardware
 {
@@ -48,14 +48,19 @@ namespace boarai::hardware
 
   private:
     auto declare_parameters() -> void;
+    auto start_services() -> void;
+    auto start_timers() -> void;
+    auto start_publishers() -> void;
+
     auto initialize_driver(std::string address, std::uint16_t port) -> void;
     auto disconnect_driver() -> void;
 
-    auto is_driver_enabled() -> bool;
     auto driver_address() -> std::string;
     auto driver_port() -> std::uint16_t;
+    auto driver_enabled() -> bool;
     auto wheel_spacing() -> double;
     auto maximum_linear_velocity() -> double;
+
     auto maximum_angular_velocity() -> double;
 
     auto on_parameters_changed(std::vector<rclcpp::Parameter> new_parameters) -> rcl_interfaces::msg::SetParametersResult;
@@ -64,19 +69,22 @@ namespace boarai::hardware
     auto on_driver_port_changed(std::int64_t new_value) -> bool;
     auto on_wheel_spacing_changed(double new_value) -> bool;
 
-    auto on_set_drive_velocity_request(services::SetDriveVelocity::Request::SharedPtr request,
-                                       services::SetDriveVelocity::Response::SharedPtr response) -> void;
-    auto on_get_maximum_angular_velocity_request(services::GetMaximumAngularVelocity::Request::SharedPtr request,
-                                                 services::GetMaximumAngularVelocity::Response::SharedPtr response) -> void;
+    auto on_drive_velocity_request(services::SetDriveVelocity::Request::SharedPtr request,
+                                   services::SetDriveVelocity::Response::SharedPtr response) -> void;
+    auto on_angular_velocity_request(services::GetMaximumAngularVelocity::Request::SharedPtr request,
+                                     services::GetMaximumAngularVelocity::Response::SharedPtr response) -> void;
 
-    auto on_voltage_update_timer_expired() -> void;
+    auto on_voltages_update_timer_expired() -> void;
+    auto on_voltages_updated(std::int16_t battery_voltage) -> void;
 
-    rclcpp::Service<services::SetDriveVelocity>::SharedPtr m_drive_velocity_service;
-    rclcpp::Service<services::GetMaximumAngularVelocity>::SharedPtr m_get_maximumum_angular_velocity_service;
-    rclcpp::Subscription<messages::Polar2D>::SharedPtr m_subscription;
-    OnSetParametersCallbackHandle::SharedPtr m_on_parameters_changed_handler;
+    rclcpp::Service<services::SetDriveVelocity>::SharedPtr m_drive_velocity_service{};
+    rclcpp::Service<services::GetMaximumAngularVelocity>::SharedPtr m_angular_velocity_service{};
 
-    rclcpp::TimerBase::SharedPtr m_voltage_update_timer;
+    rclcpp::TimerBase::SharedPtr m_voltages_update_timer{};
+
+    rclcpp::Publisher<messages::Voltage>::SharedPtr m_battery_voltages_publisher{};
+
+    OnSetParametersCallbackHandle::SharedPtr m_parameter_change_handler{};
 
     std::optional<modbus::connection> m_driver_connection{};
     std::optional<modbus::client> m_driver_client{};
