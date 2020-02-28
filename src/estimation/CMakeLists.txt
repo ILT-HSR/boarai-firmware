@@ -98,11 +98,17 @@ install(DIRECTORY
   DESTINATION "share/${PROJECT_NAME}"
 )
 
+install(DIRECTORY
+  "include/estimation"
+  DESTINATION "include"
+)
+
 #=== Ament Packaging ===#
 
 rclcpp_components_register_nodes("position_estimator" "boarai::estimation::position_estimator")
 rclcpp_components_register_nodes("velocity_estimator" "boarai::estimation::velocity_estimator")
 
 ament_export_interfaces("boarai_estimation" HAS_LIBRARY_TARGET)
-
+ament_export_include_directories("include" ${CONAN_INCLUDE_DIRS})
+ament_export_dependencies("boarai_support")
 ament_package()
