@@ -29,6 +29,7 @@ endif()
 
 add_library("velocity_control" SHARED
   "src/velocity_control/velocity_control.cpp"
+  "src/velocity_control/velocity_control_subscriptions.cpp"
 )
 
 target_include_directories("velocity_control" PUBLIC

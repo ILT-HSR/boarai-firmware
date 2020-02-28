@@ -13,6 +13,7 @@ namespace boarai::control
       : fmt_node{node_name, ros_namespace, options}
   {
     log_info("velocity_control starting up");
+    start_subscriptions();
   }
 
 }  // namespace boarai::control
