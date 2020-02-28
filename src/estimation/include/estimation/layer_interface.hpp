@@ -11,7 +11,7 @@ namespace boarai::estimation
   namespace topic
   {
     using estimated_velocity_t = messages::PolarVelocity;
-    auto estimated_velocity{"estimated_velocity"};
+    auto constexpr estimated_velocity{"estimated_velocity"};
   }  // namespace topic
 
 }  // namespace boarai::estimation
