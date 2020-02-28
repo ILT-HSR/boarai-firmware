@@ -53,8 +53,9 @@ rosidl_generate_interfaces("${PROJECT_NAME}"
   "msg/Polar2D.msg"
   "msg/PolarVelocity.msg"
   "msg/Voltage.msg"
-  "srv/SetDriveVelocity.srv"
   "srv/GetMaximumAngularVelocity.srv"
+  "srv/SetDriveVelocity.srv"
+  "srv/SetVelocity.srv"
   DEPENDENCIES builtin_interfaces
 )
 
