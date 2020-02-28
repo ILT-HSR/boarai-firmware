@@ -1,6 +1,7 @@
 #include "velocity_estimator/velocity_estimator.hpp"
 
 #include "estimation/layer_interface.hpp"
+#include "hardware/layer_interface.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "support/string_utility.hpp"
@@ -19,7 +20,13 @@ namespace boarai::estimation
   {
     log_info("position_estimator starting up");
 
+    start_publishers();
     start_subscriptions();
+  }
+
+  auto velocity_estimator::start_publishers() -> void
+  {
+    m_estimated_velocity_publisher = create_publisher<topic::estimated_velocity_t>(topic::estimated_velocity, 10);
   }
 
   auto velocity_estimator::start_subscriptions() -> void
@@ -33,9 +40,16 @@ namespace boarai::estimation
   auto velocity_estimator::on_drive_velocity_update(hardware::topic::drive_velocity_t::SharedPtr new_velocity) -> void
   {
     auto [linear_velocity, angular_velocity] = new_velocity->value;
-    log_info("received drive velocity update: linear = {:.4f} m/s || angular = {:.4f} deg/s",
-             linear_velocity,
-             angular_velocity);
+
+    m_linear_drive_velocity = (m_linear_drive_velocity * 5 + linear_velocity) / (5 + 1);
+    m_angular_drive_velocity = (m_angular_drive_velocity * 5 + angular_velocity) / (5 + 1);
+
+    auto msg = topic::estimated_velocity_t{};
+    auto velocity = topic::estimated_velocity_t::_value_type{};
+    velocity.r = m_linear_drive_velocity;
+    velocity.phi = m_angular_drive_velocity;
+    msg.value = velocity;
+    m_estimated_velocity_publisher->publish(msg);
   }
 
 }  // namespace boarai::estimation
