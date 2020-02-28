@@ -19,6 +19,11 @@ if(BUILD_TESTING)
   find_package("ament_lint_auto" REQUIRED)
   ament_lint_auto_find_test_dependencies()
   set(ament_cmake_clang_format_CONFIG_FILE "${PROJECT_SOURCE_DIR}/../../.clang-format")
+
+  add_custom_target(run_all_tests ALL
+    COMMAND ${CMAKE_CTEST_COMMAND} "--output-on-failure"
+    DEPENDS "support_unittests"
+  )
 endif()
 
 #=== boarAI Support Library ===#
@@ -30,6 +35,10 @@ add_library("support" SHARED
 target_include_directories("support" PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
+)
+
+target_compile_features("support" PUBLIC
+  "cxx_std_17"
 )
 
 target_link_libraries("support"
@@ -47,6 +56,25 @@ rosidl_generate_interfaces("${PROJECT_NAME}"
   "srv/SetDriveVelocity.srv"
   "srv/GetMaximumAngularVelocity.srv"
   DEPENDENCIES builtin_interfaces
+)
+
+#=== boarAI Support Library Tests ===#
+
+add_executable("support_unittests"
+  "test/src/support/unittests.cpp"
+)
+
+target_include_directories("support_unittests" PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/test/include>
+)
+
+target_link_libraries("support_unittests"
+  "support"
+  "CONAN_PKG::CUTE"
+)
+
+add_test(NAME "support_unittests"
+  COMMAND "support_unittests"
 )
 
 #=== Package Installation ===#
@@ -71,7 +99,7 @@ install(DIRECTORY
 #=== Ament Packaging ===#
 
 ament_export_dependencies("rosidl_default_runtime")
-ament_export_include_directories("include" ${CONAN_INCLUDE_DIRS})
+ament_export_include_directories("include" ${CONAN_INCLUDE_DIRS_FMT})
 ament_export_interfaces("boarai_support")
 ament_export_libraries("support")
 

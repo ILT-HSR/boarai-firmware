@@ -1,5 +1,6 @@
 [requires]
 fmt/[~=6.1.0]
+CUTE/[~=2.2.0]@fmorgner/stable
 
 [options]
 fmt:shared=True
