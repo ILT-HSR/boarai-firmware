@@ -1,9 +1,8 @@
 #include "velocity_control/velocity_control.hpp"
 
-#include "control/layer_interface.hpp"
-#include "estimation/layer_interface.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
+#include "support/interfaces.hpp"
 
 namespace boarai::control
 {

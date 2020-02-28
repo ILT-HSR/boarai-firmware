@@ -20,7 +20,6 @@
   <url>https://github.com/ILT-HSR/boarai-firmware</url>
 
   <build_depend>boarai_support</build_depend>
-  <build_depend>boarai_hardware</build_depend>
 
   <test_depend>ament_cmake_clang_format</test_depend>
   <test_depend>ament_cmake_lint_cmake</test_depend>

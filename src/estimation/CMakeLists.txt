@@ -11,7 +11,6 @@ include("CompilerWarnings")
 
 find_package("ament_cmake" REQUIRED)
 find_package("boarai_support" REQUIRED)
-find_package("boarai_hardware" REQUIRED)
 find_package("rclcpp_components" REQUIRED)
 find_package("rclcpp" REQUIRED)
 find_package("std_msgs" REQUIRED)
@@ -63,7 +62,6 @@ target_include_directories("velocity_estimator" PUBLIC
 )
 
 ament_target_dependencies("velocity_estimator"
-  "boarai_hardware"
   "boarai_support"
   "rclcpp_components"
   "rclcpp"
@@ -98,17 +96,11 @@ install(DIRECTORY
   DESTINATION "share/${PROJECT_NAME}"
 )
 
-install(DIRECTORY
-  "include/estimation"
-  DESTINATION "include"
-)
-
 #=== Ament Packaging ===#
 
 rclcpp_components_register_nodes("position_estimator" "boarai::estimation::position_estimator")
 rclcpp_components_register_nodes("velocity_estimator" "boarai::estimation::velocity_estimator")
 
 ament_export_interfaces("boarai_estimation" HAS_LIBRARY_TARGET)
-ament_export_include_directories("include" ${CONAN_INCLUDE_DIRS})
 ament_export_dependencies("boarai_support")
 ament_package()

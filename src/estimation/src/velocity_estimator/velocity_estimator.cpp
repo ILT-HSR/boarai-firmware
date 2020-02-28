@@ -1,9 +1,8 @@
 #include "velocity_estimator/velocity_estimator.hpp"
 
-#include "estimation/layer_interface.hpp"
-#include "hardware/layer_interface.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
+#include "support/interfaces.hpp"
 #include "support/string_utility.hpp"
 
 #include <functional>

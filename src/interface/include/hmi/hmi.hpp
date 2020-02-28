@@ -6,9 +6,6 @@
 
 namespace boarai::interface
 {
-
-  auto constexpr HMI_NODE_NAME{"hmi"};
-
   struct hmi : fmt_node
   {
     using super = rclcpp::Node;

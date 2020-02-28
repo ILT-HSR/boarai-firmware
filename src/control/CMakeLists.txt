@@ -11,7 +11,6 @@ include("CompilerWarnings")
 
 find_package("ament_cmake" REQUIRED)
 find_package("boarai_support" REQUIRED)
-find_package("boarai_estimation" REQUIRED)
 find_package("rclcpp" REQUIRED)
 find_package("rclcpp_components" REQUIRED)
 find_package("std_msgs" REQUIRED)
@@ -39,7 +38,6 @@ target_include_directories("velocity_control" PUBLIC
 
 ament_target_dependencies("velocity_control"
   "boarai_support"
-  "boarai_estimation"
   "rclcpp"
   "rclcpp_components"
   "std_msgs"
@@ -71,11 +69,6 @@ install(TARGETS
 install(DIRECTORY
   "launch"
   DESTINATION "share/${PROJECT_NAME}"
-)
-
-install(DIRECTORY
-  "include/control"
-  DESTINATION "include"
 )
 
 #=== Ament Packaging ===#

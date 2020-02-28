@@ -1,11 +1,11 @@
 #ifndef BOARAI_CONTROL_VELOCITY_CONTROL_HPP
 #define BOARAI_CONTROL_VELOCITY_CONTROL_HPP
 
-#include "estimation/layer_interface.hpp"
 #include "rclcpp/node.hpp"
 #include "rclcpp/node_options.hpp"
 #include "rclcpp/subscription.hpp"
 #include "support/fmt_node.hpp"
+#include "support/interfaces.hpp"
 
 namespace boarai::control
 {

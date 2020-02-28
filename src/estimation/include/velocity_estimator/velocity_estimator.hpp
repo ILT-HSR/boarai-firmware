@@ -1,13 +1,12 @@
 #ifndef BOARAI_ESTIMATION_POSITION_ESTIMATOR_HPP
 #define BOARAI_ESTIMATION_POSITION_ESTIMATOR_HPP
 
-#include "estimation/layer_interface.hpp"
-#include "hardware/layer_interface.hpp"
 #include "rclcpp/node.hpp"
 #include "rclcpp/node_options.hpp"
 #include "rclcpp/publisher.hpp"
 #include "rclcpp/subscription.hpp"
 #include "support/fmt_node.hpp"
+#include "support/interfaces.hpp"
 
 namespace boarai::estimation
 {

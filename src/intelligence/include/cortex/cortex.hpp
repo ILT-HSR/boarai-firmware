@@ -7,8 +7,6 @@
 namespace boarai::intelligence
 {
 
-  auto constexpr CORTEX_NODE_NAME{"cortex"};
-
   struct cortex : fmt_node
   {
     using super = rclcpp::Node;

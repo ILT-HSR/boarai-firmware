@@ -12,6 +12,8 @@ include("CompilerWarnings")
 find_package("ament_cmake" REQUIRED)
 find_package("rclcpp" REQUIRED)
 find_package("rosidl_default_generators" REQUIRED)
+find_package("sensor_msgs" REQUIRED)
+find_package("std_msgs" REQUIRED)
 
 #=== Testing Setup ===#
 
@@ -47,6 +49,8 @@ target_link_libraries("support"
 
 ament_target_dependencies("support"
   "rclcpp"
+  "sensor_msgs"
+  "std_msgs"
 )
 
 rosidl_generate_interfaces("${PROJECT_NAME}"
@@ -99,7 +103,7 @@ install(DIRECTORY
 
 #=== Ament Packaging ===#
 
-ament_export_dependencies("rosidl_default_runtime")
+ament_export_dependencies("rosidl_default_runtime" "std_msgs" "sensor_msgs")
 ament_export_include_directories("include" ${CONAN_INCLUDE_DIRS_FMT})
 ament_export_interfaces("boarai_support")
 ament_export_libraries("support")
