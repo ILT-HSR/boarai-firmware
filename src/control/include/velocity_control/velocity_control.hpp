@@ -1,5 +1,5 @@
-#ifndef BOARAI_VELOCITY_POSITION_CONTROL_HPP
-#define BOARAI_VELOCITY_POSITION_CONTROL_HPP
+#ifndef BOARAI_CONTROL_VELOCITY_CONTROL_HPP
+#define BOARAI_CONTROL_VELOCITY_CONTROL_HPP
 
 #include "rclcpp/node.hpp"
 #include "rclcpp/node_options.hpp"
