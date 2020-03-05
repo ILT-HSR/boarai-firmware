@@ -24,29 +24,30 @@ if(BUILD_TESTING)
   set(ament_cmake_clang_format_CONFIG_FILE "${PROJECT_SOURCE_DIR}/../../.clang-format")
 endif()
 
-#=== position_control Node ===#
+#=== velocity_control Node ===#
 
-add_library("position_control" SHARED
-  "src/position_control/position_control.cpp"
+add_library("velocity_control" SHARED
+  "src/velocity_control/velocity_control.cpp"
+  "src/velocity_control/velocity_control_subscriptions.cpp"
 )
 
-target_include_directories("position_control" PUBLIC
+target_include_directories("velocity_control" PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
 
-ament_target_dependencies("position_control"
+ament_target_dependencies("velocity_control"
   "boarai_support"
   "rclcpp"
   "rclcpp_components"
   "std_msgs"
 )
 
-target_compile_features("position_control" PUBLIC
+target_compile_features("velocity_control" PUBLIC
   "cxx_std_17"
 )
 
-set_target_properties("position_control" PROPERTIES
+set_target_properties("velocity_control" PROPERTIES
   CXX_STANDARD_REQUIRED ON
   CXX_EXTENSIONS OFF
   INTERPROCEDURAL_OPTIMIZATION ON
@@ -56,7 +57,7 @@ set_target_properties("position_control" PROPERTIES
 
 install(TARGETS
   # nodes
-  "position_control"
+  "velocity_control"
 
   EXPORT "boarai_control"
   LIBRARY DESTINATION "lib"
@@ -72,9 +73,9 @@ install(DIRECTORY
 
 #=== Ament Packaging ===#
 
-rclcpp_components_register_nodes("position_control" "boarai::control::position_control")
+rclcpp_components_register_nodes("velocity_control" "boarai::control::velocity_control")
 
 ament_export_interfaces("boarai_control" HAS_LIBRARY_TARGET)
-
+ament_export_dependencies("boarai_support")
 ament_package()
 

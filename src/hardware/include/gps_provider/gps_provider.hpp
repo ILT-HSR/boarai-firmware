@@ -3,7 +3,6 @@
 
 #include "gps_provider/gpsd_client.hpp"
 #include "gps_provider/gpsmm_adapter.hpp"
-#include "hardware/layer_interface.hpp"
 #include "rclcpp/clock.hpp"
 #include "rclcpp/parameter.hpp"
 #include "rclcpp/time_source.hpp"
@@ -11,6 +10,7 @@
 #include "sensor_msgs/msg/nav_sat_status.hpp"
 #include "support/enum_utility.hpp"
 #include "support/fmt_node.hpp"
+#include "support/interfaces.hpp"
 #include "support/to_string.hpp"
 
 #include <cstdint>

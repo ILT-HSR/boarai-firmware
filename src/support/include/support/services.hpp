@@ -3,6 +3,7 @@
 
 #include "boarai_support/srv/get_maximum_angular_velocity.hpp"
 #include "boarai_support/srv/set_drive_velocity.hpp"
+#include "boarai_support/srv/set_velocity.hpp"
 
 namespace boarai
 {

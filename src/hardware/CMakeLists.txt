@@ -207,17 +207,11 @@ install(DIRECTORY
   DESTINATION "share/${PROJECT_NAME}"
 )
 
-install(DIRECTORY
-  "include/hardware"
-  DESTINATION "include"
-)
-
 #=== Ament Packaging ===#
 
 rclcpp_components_register_nodes("tank_drive" "boarai::hardware::tank_drive")
 rclcpp_components_register_nodes("gps_provider" "boarai::hardware::gps_provider")
 
 ament_export_interfaces("boarai_hardware" HAS_LIBRARY_TARGET)
-ament_export_include_directories("include" ${CONAN_INCLUDE_DIRS})
 ament_export_dependencies("std_msgs" "sensor_msgs")
 ament_package()

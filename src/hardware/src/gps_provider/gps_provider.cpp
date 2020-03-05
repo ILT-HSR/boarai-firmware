@@ -1,7 +1,6 @@
 #include "gps_provider/gps_provider.hpp"
 
 #include "gps_provider/gpsmm_adapter.hpp"
-#include "hardware/layer_interface.hpp"
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
 #include "rclcpp/clock.hpp"
 #include "rclcpp/parameter.hpp"
@@ -10,6 +9,7 @@
 #include "sensor_msgs/msg/nav_sat_fix.hpp"
 #include "sensor_msgs/msg/nav_sat_status.hpp"
 #include "std_msgs/msg/header.hpp"
+#include "support/interfaces.hpp"
 
 #include <cstdint>
 #include <exception>

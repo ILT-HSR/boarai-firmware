@@ -1,7 +1,6 @@
 #ifndef BOARAI_HARDWARE_MOTOR_CONTROL_HPP
 #define BOARAI_HARDWARE_MOTOR_CONTROL_HPP
 
-#include "hardware/layer_interface.hpp"
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
 #include "rclcpp/node.hpp"
 #include "rclcpp/node_options.hpp"
@@ -11,6 +10,7 @@
 #include "roboteq/driver.hpp"
 #include "support/enum_utility.hpp"
 #include "support/fmt_node.hpp"
+#include "support/interfaces.hpp"
 #include "support/messages.hpp"
 #include "support/services.hpp"
 #include "support/to_string.hpp"
