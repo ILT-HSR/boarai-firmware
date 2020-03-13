@@ -11,6 +11,23 @@ HMI: ComposableNode = ComposableNode(
     parameters=[]
 )
 
+GAMEPAD: Node = Node(
+    node_name='gamepad',
+    node_namespace='/boarai/interface',
+    package='joystick_ros2',
+    node_executable='joystick_ros2',
+    output='screen',
+    emulate_tty=True,
+    parameters=[{
+        "deadzone": 0.1,
+    }],
+    remappings=[
+        (
+            "rostopic://joy",
+            "gamepad"
+        ),
+    ]
+)
 
 def generate_launch_description() -> launch.LaunchDescription:
     container = ComposableNodeContainer(
@@ -25,19 +42,7 @@ def generate_launch_description() -> launch.LaunchDescription:
         emulate_tty=True,
     )
 
-    gamepad = Node(
-        node_name='gamepad',
-        node_namespace='/boarai/interface',
-        package='joystick_ros2',
-        node_executable='joystick_ros2',
-        output='screen',
-        emulate_tty=True,
-        remappings=[
-            (
-                "rostopic://joy",
-                "gamepad"
-            ),
-        ]
-    )
-
-    return launch.LaunchDescription([container, gamepad])
+    return launch.LaunchDescription([
+        container,
+        GAMEPAD,
+    ])
