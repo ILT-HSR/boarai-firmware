@@ -27,6 +27,8 @@
   <test_depend>ament_cmake_lint_cmake</test_depend>
   <test_depend>amend_cmake_xmllint</test_depend>
 
+  <exec_depend>joystick_ros2</exec_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>

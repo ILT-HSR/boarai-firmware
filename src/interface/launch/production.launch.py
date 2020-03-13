@@ -1,6 +1,6 @@
 import launch
 
-from launch_ros.actions import ComposableNodeContainer
+from launch_ros.actions import ComposableNodeContainer, Node
 from launch_ros.descriptions import ComposableNode
 
 
@@ -25,4 +25,19 @@ def generate_launch_description() -> launch.LaunchDescription:
         emulate_tty=True,
     )
 
-    return launch.LaunchDescription([container])
+    gamepad = Node(
+        node_name='gamepad',
+        node_namespace='/boarai/interface',
+        package='joystick_ros2',
+        node_executable='joystick_ros2',
+        output='screen',
+        emulate_tty=True,
+        remappings=[
+            (
+                "rostopic://joy",
+                "gamepad"
+            ),
+        ]
+    )
+
+    return launch.LaunchDescription([container, gamepad])
