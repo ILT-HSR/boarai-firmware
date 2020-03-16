@@ -4,10 +4,10 @@ from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 
 
-CORTEX: ComposableNode = ComposableNode(
+MODE_CONTROLLER: ComposableNode = ComposableNode(
     package='boarai_intelligence',
-    node_plugin='boarai::intelligence::cortex',
-    node_name='cortex',
+    node_plugin='boarai::intelligence::mode_controller',
+    node_name='mode_controller',
     parameters=[]
 )
 
@@ -19,7 +19,7 @@ def generate_launch_description() -> launch.LaunchDescription:
         package='rclcpp_components',
         node_executable='component_container',
         composable_node_descriptions=[
-            CORTEX,           
+            MODE_CONTROLLER,           
         ],
         output='screen',
         emulate_tty=True,

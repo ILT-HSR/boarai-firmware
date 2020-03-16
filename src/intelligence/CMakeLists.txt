@@ -23,29 +23,31 @@ if(BUILD_TESTING)
   set(ament_cmake_clang_format_CONFIG_FILE "${PROJECT_SOURCE_DIR}/../../.clang-format")
 endif()
 
-#=== cortex Node ===#
+#=== mode_controller Node ===#
 
-add_library("cortex" SHARED
-  "src/cortex/cortex.cpp"
+add_library("mode_controller" SHARED
+  "src/mode_controller/mode_controller_subscriptions.cpp"
+  "src/mode_controller/mode_controller_timers.cpp"
+  "src/mode_controller/mode_controller.cpp"
 )
 
-target_include_directories("cortex" PUBLIC
+target_include_directories("mode_controller" PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
 
-ament_target_dependencies("cortex"
+ament_target_dependencies("mode_controller"
   "boarai_support"
   "rclcpp"
   "rclcpp_components"
   "std_msgs"
 )
 
-target_compile_features("cortex" PUBLIC
+target_compile_features("mode_controller" PUBLIC
   "cxx_std_17"
 )
 
-set_target_properties("cortex" PROPERTIES
+set_target_properties("mode_controller" PROPERTIES
   CXX_STANDARD_REQUIRED ON
   CXX_EXTENSIONS OFF
   INTERPROCEDURAL_OPTIMIZATION ON
@@ -55,7 +57,7 @@ set_target_properties("cortex" PROPERTIES
 
 install(TARGETS
   # nodes
-  "cortex"
+  "mode_controller"
 
   EXPORT "boarai_intelligence"
   LIBRARY DESTINATION "lib"
@@ -71,7 +73,7 @@ install(DIRECTORY
 
 #=== Ament Packaging ===#
 
-rclcpp_components_register_nodes("cortex" "boarai::intelligence::cortex")
+rclcpp_components_register_nodes("mode_controller" "boarai::intelligence::mode_controller")
 
 ament_export_interfaces("boarai_intelligence" HAS_LIBRARY_TARGET)
 
