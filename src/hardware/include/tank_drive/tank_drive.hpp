@@ -50,6 +50,7 @@ namespace boarai::hardware
     auto start_services() -> void;
     auto start_timers() -> void;
     auto start_publishers() -> void;
+    auto publish_limits() -> void;
 
     auto initialize_driver(std::string address, std::uint16_t port) -> void;
     auto disconnect_driver() -> void;
@@ -84,6 +85,9 @@ namespace boarai::hardware
 
     rclcpp::Publisher<topic::battery_voltage_t>::SharedPtr m_battery_voltages_publisher{};
     rclcpp::Publisher<topic::drive_velocity_t>::SharedPtr m_drive_velocity_publisher{};
+
+    rclcpp::Publisher<limit::angular_velocity_t>::SharedPtr m_angular_velocity_limit_publisher{};
+    rclcpp::Publisher<limit::linear_velocity_t>::SharedPtr m_linear_velocity_limit_publisher{};
 
     OnSetParametersCallbackHandle::SharedPtr m_parameter_change_handler{};
 

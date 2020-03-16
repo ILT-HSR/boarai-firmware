@@ -54,6 +54,8 @@ ament_target_dependencies("support"
 )
 
 rosidl_generate_interfaces("${PROJECT_NAME}"
+  "msg/AngularVelocity.msg"
+  "msg/LinearVelocity.msg"
   "msg/Polar2D.msg"
   "msg/PolarVelocity.msg"
   "msg/Voltage.msg"

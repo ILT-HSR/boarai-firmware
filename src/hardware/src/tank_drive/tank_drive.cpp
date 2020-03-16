@@ -3,11 +3,13 @@
 #include "rcl_interfaces/msg/parameter_descriptor.hpp"
 #include "rcl_interfaces/msg/parameter_type.hpp"
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
+#include "rclcpp/qos.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "roboteq/channel.hpp"
 #include "support/enum_utility.hpp"
 #include "support/fmt_node.hpp"
 #include "support/interfaces.hpp"
+#include "support/string_utility.hpp"
 #include "support/to_string.hpp"
 
 #include <modbuscpp/address.hpp>
@@ -25,8 +27,6 @@ using namespace std::chrono_literals;
 using namespace modbus::modbus_literals;
 using namespace std::placeholders;
 
-auto constexpr node_name{"tank_drive"};
-
 auto static make_context(std::string address, std::uint16_t port) -> modbus::context
 {
   auto tcp_context = modbus::tcp_context{address, port};
@@ -38,6 +38,14 @@ auto static make_context(std::string address, std::uint16_t port) -> modbus::con
 
 namespace boarai::hardware
 {
+
+  namespace
+  {
+    auto constexpr node_name{"tank_drive"};
+
+    auto const angular_velocity_limit_topic{join("/", ros_limit_namespace, join("_", limit::angular_velocity, node_name))};
+    auto const linear_velocity_limit_topic{join("/", ros_limit_namespace, join("_", limit::linear_velocity, node_name))};
+  }  // namespace
 
   tank_drive::tank_drive(rclcpp::NodeOptions const & options)
       : fmt_node{node_name, ros_namespace, options}
@@ -60,9 +68,22 @@ namespace boarai::hardware
         start_publishers();
         start_timers();
       }
+
+      publish_limits();
     }
 
     m_parameter_change_handler = add_on_set_parameters_callback(std::bind(&tank_drive::on_parameters_changed, this, _1));
+  }
+
+  auto tank_drive::publish_limits() -> void
+  {
+    m_angular_velocity_limit_publisher =
+        create_publisher<limit::angular_velocity_t>(angular_velocity_limit_topic, default_limit_policy);
+    m_angular_velocity_limit_publisher->publish(messages::AngularVelocity{}.set__value(maximum_angular_velocity()));
+
+    m_linear_velocity_limit_publisher =
+        create_publisher<limit::linear_velocity_t>(linear_velocity_limit_topic, default_limit_policy);
+    m_linear_velocity_limit_publisher->publish(messages::LinearVelocity{}.set__value(maximum_linear_velocity()));
   }
 
   auto tank_drive::start_publishers() -> void

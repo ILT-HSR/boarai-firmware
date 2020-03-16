@@ -1,12 +1,17 @@
 #ifndef BOARAI_SUPPORT_INTERFACES_HPP
 #define BOARAI_SUPPORT_INTERFACES_HPP
 
+#include "rclcpp/qos.hpp"
 #include "sensor_msgs/msg/nav_sat_fix.hpp"
 #include "support/messages.hpp"
 #include "support/services.hpp"
 
 namespace boarai
 {
+
+  auto constexpr ros_limit_namespace{"limit"};
+
+  auto const default_limit_policy{rclcpp::QoS{1}.transient_local().reliable()};
   namespace control
   {
     auto constexpr ros_namespace{"/boarai/control"};
@@ -47,6 +52,15 @@ namespace boarai
       using global_position_t = sensor_msgs::msg::NavSatFix;
       auto constexpr global_position{"global_position"};
     }  // namespace topic
+
+    namespace limit
+    {
+      using angular_velocity_t = messages::AngularVelocity;
+      auto constexpr angular_velocity{"angular_velocity"};
+
+      using linear_velocity_t = messages::LinearVelocity;
+      auto constexpr linear_velocity{"linear_velocity"};
+    }  // namespace limit
   }    // namespace hardware
 
   namespace intelligence
