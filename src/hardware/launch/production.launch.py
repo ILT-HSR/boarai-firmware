@@ -1,6 +1,6 @@
 import launch
 
-from launch_ros.actions import ComposableNodeContainer
+from launch_ros.actions import ComposableNodeContainer, Node
 from launch_ros.descriptions import ComposableNode
 
 
@@ -24,6 +24,23 @@ TANK_DRIVE: ComposableNode = ComposableNode(
     }]
 )
 
+GAMEPAD: Node = Node(
+    node_name='gamepad',
+    node_namespace='/boarai/hardware',
+    package='joystick_ros2',
+    node_executable='joystick_ros2',
+    output='screen',
+    emulate_tty=True,
+    parameters=[{
+        "deadzone": 0.1,
+    }],
+    remappings=[
+        (
+            "rostopic://joy",
+            "gamepad"
+        ),
+    ]
+)
 
 def generate_launch_description() -> launch.LaunchDescription:
     container = ComposableNodeContainer(
@@ -39,4 +56,7 @@ def generate_launch_description() -> launch.LaunchDescription:
         emulate_tty=True,
     )
 
-    return launch.LaunchDescription([container])
+    return launch.LaunchDescription([
+        container,
+        GAMEPAD
+    ])
