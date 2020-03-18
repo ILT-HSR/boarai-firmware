@@ -26,6 +26,8 @@ endif()
 #=== mode_controller Node ===#
 
 add_library("mode_controller" SHARED
+  "src/mode_controller/mode_controller_mode_enum.cpp"
+  "src/mode_controller/mode_controller_services.cpp"
   "src/mode_controller/mode_controller_subscriptions.cpp"
   "src/mode_controller/mode_controller_timers.cpp"
   "src/mode_controller/mode_controller.cpp"

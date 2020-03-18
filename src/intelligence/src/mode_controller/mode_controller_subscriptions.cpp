@@ -33,7 +33,7 @@ namespace boarai::intelligence
       -> void
   {
     auto limit = new_limit->value;
-    if (limit < m_angular_velocity_limit)
+    if (!m_angular_velocity_limit || limit < m_angular_velocity_limit)
     {
       log_info("received new angular velocity limit from {}: {}", source, limit);
       m_angular_velocity_limit = limit;
@@ -44,10 +44,15 @@ namespace boarai::intelligence
       -> void
   {
     auto limit = new_limit->value;
-    if (limit < m_linear_velocity_limit)
+    if (!m_linear_velocity_limit || limit < m_linear_velocity_limit)
     {
       log_info("received new linear velocity limit from {}: {}", source, limit);
       m_linear_velocity_limit = limit;
     }
+  }
+
+  auto mode_controller::on_gamepad_input_update(interface::topic::gamepad_input_t::SharedPtr new_input) -> void
+  {
+    log_info("received new gamepad input: throttle: {} || steering: {}", new_input->throttle, new_input->steering);
   }
 }  // namespace boarai::intelligence

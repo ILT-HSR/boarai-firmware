@@ -10,12 +10,21 @@ namespace boarai
 {
 
   auto constexpr ros_limit_namespace{"limit"};
-
   auto const default_limit_policy{rclcpp::QoS{1}.transient_local().reliable()};
+
+  auto constexpr ros_status_namespace{"status"};
+  auto const default_status_policy{rclcpp::QoS{1}.transient_local().reliable()};
+
   namespace control
   {
     auto constexpr ros_namespace{"/boarai/control"};
-  }  // namespace control
+
+    namespace service
+    {
+      using set_target_velocity_t = services::SetVelocity;
+      auto constexpr set_target_velocity{"set_target_velocity"};
+    }  // namespace service
+  }    // namespace control
 
   namespace estimation
   {
@@ -66,12 +75,24 @@ namespace boarai
   namespace intelligence
   {
     auto constexpr ros_namespace = "/boarai/intelligence";
-  }  // namespace intelligence
+
+    namespace service
+    {
+      using set_mode_t = services::SetMode;
+      auto constexpr set_mode{"set_mode"};
+    }  // namespace service
+  }    // namespace intelligence
 
   namespace interface
   {
     auto constexpr ros_namespace = "/boarai/interface";
-  }  // namespace interface
+
+    namespace topic
+    {
+      using gamepad_input_t = messages::GamepadControls;
+      auto constexpr gamepad_input = "gamepad";
+    }  // namespace topic
+  }    // namespace interface
 }  // namespace boarai
 
 #endif
