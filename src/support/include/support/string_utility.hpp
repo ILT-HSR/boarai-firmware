@@ -1,17 +1,24 @@
 #ifndef BOARAI_SUPPORT_STRING_UTILITY_HPP
 #define BOARAI_SUPPORT_STRING_UTILITY_HPP
 
+#include <sstream>
 #include <string>
 #include <utility>
 
 namespace boarai
 {
 
-  template<typename JointType, typename FirstPart, typename... Rest>
-  auto join(JointType && joint, FirstPart && first, Rest &&... remaining) -> std::string
+  template<typename JointType, typename... Parts>
+  auto join(JointType && joint, Parts &&... parts) -> std::string
   {
-    return static_cast<std::string>(first) + (static_cast<std::string>(joint) + ... + static_cast<std::string>(remaining));
+    auto joined{std::ostringstream{}};
+    auto part_count{sizeof...(parts)};
+    auto part_index{decltype(part_count){}};
+    ((joined << parts << (++part_index < part_count ? joint : "")), ...);
+    return joined.str();
   }
+
+  // (first ? joint : ((first = true), ""))
 
 }  // namespace boarai
 

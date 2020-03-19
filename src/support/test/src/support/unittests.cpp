@@ -12,10 +12,16 @@ auto test_joining_two_strings_does_not_include_a_trailing_joint()
   ASSERT_EQUAL("hello/world", joined);
 }
 
-auto test_joining_a_single_string_preserves_the_trailing_joint()
+auto test_joining_a_single_string_has_no_trailing_joint()
 {
   auto joined = boarai::join("/", "hello");
-  ASSERT_EQUAL("hello/", joined);
+  ASSERT_EQUAL("hello", joined);
+}
+
+auto test_joining_more_than_two_strings_does_not_include_a_trailing_joint()
+{
+  auto joined = boarai::join("/", "hello", "world", "whirld");
+  ASSERT_EQUAL("hello/world/whirld", joined);
 }
 
 auto support_suite() -> std::pair<cute::suite, std::string>
@@ -23,7 +29,8 @@ auto support_suite() -> std::pair<cute::suite, std::string>
   return {
       cute::suite{
           CUTE(test_joining_two_strings_does_not_include_a_trailing_joint),
-          CUTE(test_joining_a_single_string_preserves_the_trailing_joint),
+          CUTE(test_joining_a_single_string_has_no_trailing_joint),
+          CUTE(test_joining_more_than_two_strings_does_not_include_a_trailing_joint),
       },
       "Support Library Unit Tests",
   };

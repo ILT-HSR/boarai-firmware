@@ -19,6 +19,7 @@ namespace boarai::intelligence
                                             service::set_mode_t::Response::SharedPtr response) -> void
   {
     auto raw_mode = request->mode;
+    log_debug("mode '{}' was requested", raw_mode);
     if (!is_valid<mode>(raw_mode))
     {
       response->accepted = false;
@@ -35,6 +36,7 @@ namespace boarai::intelligence
     change_to(real_mode);
 
     response->accepted = true;
+    log_debug("changed to mode '{}'", raw_mode);
   }
 
 }  // namespace boarai::intelligence

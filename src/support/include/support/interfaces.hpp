@@ -2,12 +2,15 @@
 #define BOARAI_SUPPORT_INTERFACES_HPP
 
 #include "rclcpp/qos.hpp"
+#include "sensor_msgs/msg/joy.hpp"
 #include "sensor_msgs/msg/nav_sat_fix.hpp"
+#include "std_msgs/msg/bool.hpp"
 #include "support/messages.hpp"
 #include "support/services.hpp"
 
 namespace boarai
 {
+  auto const default_topic_policy{rclcpp::QoS{10}};
 
   auto constexpr ros_limit_namespace{"limit"};
   auto const default_limit_policy{rclcpp::QoS{1}.transient_local().reliable()};
@@ -60,6 +63,9 @@ namespace boarai
 
       using global_position_t = sensor_msgs::msg::NavSatFix;
       auto constexpr global_position{"global_position"};
+
+      using joystick_data_t = sensor_msgs::msg::Joy;
+      auto constexpr joystick_data{"joystick_data"};
     }  // namespace topic
 
     namespace limit
@@ -70,6 +76,12 @@ namespace boarai
       using linear_velocity_t = messages::LinearVelocity;
       auto constexpr linear_velocity{"linear_velocity"};
     }  // namespace limit
+
+    namespace status
+    {
+      using joystick_connected_t = std_msgs::msg::Bool;
+      auto constexpr joystick_connected{"joystick_connected"};
+    }  // namespace status
   }    // namespace hardware
 
   namespace intelligence

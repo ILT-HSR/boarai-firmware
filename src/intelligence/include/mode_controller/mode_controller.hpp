@@ -1,6 +1,7 @@
 #ifndef BOARAI_INTELLIGENCE_MODE_CONTROLLER_HPP
 #define BOARAI_INTELLIGENCE_MODE_CONTROLLER_HPP
 
+#include "rclcpp/client.hpp"
 #include "rclcpp/node.hpp"
 #include "rclcpp/node_options.hpp"
 #include "rclcpp/service.hpp"
@@ -59,6 +60,8 @@ namespace boarai::intelligence
     rclcpp::ServiceBase::SharedPtr m_set_mode_service{};
 
     rclcpp::SubscriptionBase::SharedPtr m_gamepad_subscription{};
+
+    rclcpp::Client<control::service::set_target_velocity_t>::SharedPtr m_set_target_velocity_client{};
 
     std::map<std::string, rclcpp::SubscriptionBase::SharedPtr> m_limit_subscriptions{};
 

@@ -53,6 +53,21 @@ namespace boarai::intelligence
 
   auto mode_controller::on_gamepad_input_update(interface::topic::gamepad_input_t::SharedPtr new_input) -> void
   {
-    log_info("received new gamepad input: throttle: {} || steering: {}", new_input->throttle, new_input->steering);
+    auto [throttle, steering] = *new_input;
+    log_debug("received new gamepad input: throttle: {} || steering: {}", throttle, steering);
+    auto real_throttle{throttle * *m_linear_velocity_limit};
+    auto real_steering{steering * *m_angular_velocity_limit};
+
+    if (m_set_target_velocity_client->service_is_ready())
+    {
+      log_debug("calling '{}' with throttle=={} and steering=={}",
+                m_set_target_velocity_client->get_service_name(),
+                real_throttle,
+                real_steering);
+      auto request = std::make_shared<control::service::set_target_velocity_t::Request>();
+      request->velocity =
+          messages::PolarVelocity{}.set__value(messages::Polar2D{}.set__r(real_throttle).set__phi(real_steering));
+      m_set_target_velocity_client->async_send_request(request);
+    }
   }
 }  // namespace boarai::intelligence

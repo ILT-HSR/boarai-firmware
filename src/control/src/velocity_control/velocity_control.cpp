@@ -17,10 +17,12 @@ namespace boarai::control
       : fmt_node{node_name, ros_namespace, options}
   {
     log_info("velocity_control starting up");
+
+    m_drive_velocity_client = create_client<hardware::service::set_drive_velocity_t>(
+        join("/", hardware::ros_namespace, hardware::service::set_drive_velocity));
+
     start_subscriptions();
     start_services();
-    m_drive_velocity_client = create_client<hardware::service::set_drive_velocity_t>(
-        join(hardware::ros_namespace, hardware::service::set_drive_velocity));
   }
 
   auto velocity_control::start_services() -> void
@@ -36,10 +38,14 @@ namespace boarai::control
     auto velocity = request->velocity.value;
     log_info("received request to set velocity to: linear: {} || angular: {}", velocity.r, velocity.phi);
 
-    auto hw_request = std::make_shared<hardware::service::set_drive_velocity_t::Request>();
-    hw_request->velocity = messages::PolarVelocity{}.set__value(velocity);
-    auto future = m_drive_velocity_client->async_send_request(hw_request);
-    future.get();
+    if (m_drive_velocity_client->service_is_ready())
+    {
+      log_debug("calling '{}' with linear=={} and angular=={}", velocity.r, velocity.phi);
+      auto hw_request = std::make_shared<hardware::service::set_drive_velocity_t::Request>();
+      hw_request->velocity = messages::PolarVelocity{}.set__value(velocity);
+      auto future = m_drive_velocity_client->async_send_request(hw_request);
+      future.get();
+    }
   }
 
 }  // namespace boarai::control

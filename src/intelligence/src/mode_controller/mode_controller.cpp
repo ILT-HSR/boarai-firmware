@@ -17,6 +17,10 @@ namespace boarai::intelligence
       : fmt_node{node_name, ros_namespace, options}
   {
     log_info("mode_controller starting up");
+
+    m_set_target_velocity_client = create_client<control::service::set_target_velocity_t>(
+        join("/", control::ros_namespace, control::service::set_target_velocity));
+
     start_timers();
     start_services();
   }

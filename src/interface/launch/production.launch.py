@@ -11,6 +11,14 @@ HMI: ComposableNode = ComposableNode(
     parameters=[]
 )
 
+GAMEPAD: ComposableNode = ComposableNode(
+    package='boarai_interface',
+    node_plugin='boarai::interface::gamepad',
+    node_name='gamepad',
+    parameters=[]
+)
+
+
 def generate_launch_description() -> launch.LaunchDescription:
     container = ComposableNodeContainer(
         node_name='container',
@@ -19,6 +27,7 @@ def generate_launch_description() -> launch.LaunchDescription:
         node_executable='component_container',
         composable_node_descriptions=[
             HMI,           
+            GAMEPAD,
         ],
         output='screen',
         emulate_tty=True,
