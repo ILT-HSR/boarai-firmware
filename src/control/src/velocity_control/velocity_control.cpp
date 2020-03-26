@@ -40,7 +40,10 @@ namespace boarai::control
 
     if (m_drive_velocity_client->service_is_ready())
     {
-      log_debug("calling '{}' with linear=={} and angular=={}", velocity.r, velocity.phi);
+      log_debug("calling '{}' with linear=={} and angular=={}",
+                m_drive_velocity_client->get_service_name(),
+                velocity.r,
+                velocity.phi);
       auto hw_request = std::make_shared<hardware::service::set_drive_velocity_t::Request>();
       hw_request->velocity = messages::PolarVelocity{}.set__value(velocity);
       auto future = m_drive_velocity_client->async_send_request(hw_request);
