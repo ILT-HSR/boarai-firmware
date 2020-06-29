@@ -11,6 +11,13 @@ GPS_PROVIDER: ComposableNode = ComposableNode(
     parameters=[]
 )
 
+IMU: ComposableNode = ComposableNode(
+    package='boarai_hardware',
+    node_plugin='boarai::hardware::imu',
+    node_name='imu',
+    parameters=[]
+)
+
 TANK_DRIVE: ComposableNode = ComposableNode(
     package='boarai_hardware',
     node_plugin='boarai::hardware::tank_drive',
@@ -51,6 +58,7 @@ def generate_launch_description() -> launch.LaunchDescription:
         composable_node_descriptions=[
             GPS_PROVIDER,
             TANK_DRIVE,
+            IMU,
         ],
         output='screen',
         emulate_tty=True,

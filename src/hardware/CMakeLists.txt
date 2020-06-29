@@ -184,6 +184,39 @@ set_target_properties("gps_provider" PROPERTIES
   INTERPROCEDURAL_OPTIMIZATION ON
 )
 
+#=== imu Node ===#
+
+add_library("imu" SHARED
+  "src/imu/imu.cpp"
+)
+
+target_include_directories("imu" PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries("imu"
+  "i2c"
+)
+
+ament_target_dependencies("imu"
+  "boarai_support"
+  "rclcpp"
+  "rclcpp_components"
+  "sensor_msgs"
+  "std_msgs"
+)
+
+target_compile_features("imu" PUBLIC
+  "cxx_std_17"
+)
+
+set_target_properties("imu" PROPERTIES
+  CXX_STANDARD_REQUIRED ON
+  CXX_EXTENSIONS OFF
+  INTERPROCEDURAL_OPTIMIZATION ON
+)
+
 #=== Package Installation ===#
 
 install(TARGETS
@@ -194,6 +227,7 @@ install(TARGETS
   # nodes
   "tank_drive"
   "gps_provider"
+  "imu"
 
   EXPORT "boarai_hardware"
   LIBRARY DESTINATION "lib"
@@ -211,6 +245,7 @@ install(DIRECTORY
 
 rclcpp_components_register_nodes("tank_drive" "boarai::hardware::tank_drive")
 rclcpp_components_register_nodes("gps_provider" "boarai::hardware::gps_provider")
+rclcpp_components_register_nodes("imu" "boarai::hardware::imu")
 
 ament_export_interfaces("boarai_hardware" HAS_LIBRARY_TARGET)
 ament_export_dependencies("std_msgs" "sensor_msgs")
