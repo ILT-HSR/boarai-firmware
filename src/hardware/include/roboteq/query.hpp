@@ -17,7 +17,7 @@ namespace boarai::hardware::roboteq
   namespace impl
   {
     template<typename ResultType, std::size_t... Indices>
-    auto to(std::array<std::byte, 4> const & bytes, std::index_sequence<Indices...>)
+    auto to(std::array<std::byte, 4> const & bytes, std::index_sequence<Indices...>) -> ResultType
     {
       return ((static_cast<ResultType>(bytes[3 - Indices]) << Indices * 8) | ...);
     }
