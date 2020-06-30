@@ -2,6 +2,7 @@
 #define BOARAI_HARDWARE_BNO055_HPP
 
 #include "imu/i2c_device.hpp"
+#include "imu/imu_device.hpp"
 #include "support/fallible.hpp"
 
 #include <cstddef>
@@ -13,9 +14,11 @@ namespace boarai::hardware
 
   enum struct device_register : std::uint8_t;
 
-  struct bno055
+  struct bno055 : imu_device
   {
     explicit bno055(std::filesystem::path bus);
+
+    auto euler_orientation() -> imu_device::orientation override;
 
   private:
     auto read(device_register reg) -> fallible<std::byte>;

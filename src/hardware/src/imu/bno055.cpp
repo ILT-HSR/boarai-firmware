@@ -28,6 +28,11 @@ namespace boarai::hardware
     }
   }
 
+  auto bno055::euler_orientation() -> orientation
+  {
+    return {};
+  }
+
   auto bno055::read(device_register reg) -> fallible<std::byte>
   {
     auto result = read(reg, 1);
