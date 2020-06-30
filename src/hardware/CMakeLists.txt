@@ -187,6 +187,7 @@ set_target_properties("gps_provider" PROPERTIES
 #=== imu Node ===#
 
 add_library("imu" SHARED
+  "src/imu/i2c_device.cpp"
   "src/imu/imu.cpp"
 )
 

@@ -1,6 +1,10 @@
 #include "imu/imu.hpp"
 
+extern "C"
+{
 #include "imu/smbus.h"
+}
+
 #include "rclcpp_components/register_node_macro.hpp"
 #include "support/interfaces.hpp"
 

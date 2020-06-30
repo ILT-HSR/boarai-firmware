@@ -1,7 +1,6 @@
 #ifndef BOARAI_HARDWARE_IMU_HPP
 #define BOARAI_HARDWARE_IMU_HPP
 
-#include "imu/smbus.h"
 #include "rclcpp/clock.hpp"
 #include "rclcpp/parameter.hpp"
 #include "rclcpp/time_source.hpp"
