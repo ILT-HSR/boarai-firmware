@@ -29,7 +29,7 @@ namespace boarai::hardware
     magnetometer_id = 0x02,
     gyroscope_id = 0x03,
     // ...
-    euler_roll_lsb = 0x1c,
+    euler_heading_lsb = 0x1a,
     // ...
     operation_mode = 0x3d,
     power_mode = 0x3e,
@@ -92,7 +92,7 @@ namespace boarai::hardware
 
   auto bno055::euler_orientation() -> orientation
   {
-    auto raw_data = expect(read(device_register::euler_roll_lsb, 6));
+    auto raw_data = expect(read(device_register::euler_heading_lsb, 6));
     auto converted = orientation{};
     std::memcpy(&converted, raw_data.data(), raw_data.size());
     return converted;
