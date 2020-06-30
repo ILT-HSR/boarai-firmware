@@ -7,12 +7,15 @@
 
 #include <cstddef>
 #include <filesystem>
+#include <system_error>
 #include <vector>
 
 namespace boarai::hardware
 {
 
   enum struct device_register : std::uint8_t;
+  enum struct operation_mode : std::uint8_t;
+  enum struct power_mode : std::uint8_t;
 
   struct bno055 : imu_device
   {
@@ -23,6 +26,11 @@ namespace boarai::hardware
   private:
     auto read(device_register reg) -> fallible<std::byte>;
     auto read(device_register reg, std::size_t amount) -> fallible<std::vector<std::byte>>;
+    auto write(device_register reg, std::byte data) -> std::error_code;
+    auto write(device_register reg, std::vector<std::byte> data) -> std::error_code;
+
+    auto enter(operation_mode mode) -> std::error_code;
+    auto enter(power_mode mode) -> std::error_code;
 
     i2c_device m_device;
   };

@@ -12,6 +12,12 @@ namespace boarai
   using fallible = std::variant<std::error_code, SuccessType>;
 
   template<typename SuccessType>
+  auto inline constexpr failed(fallible<SuccessType> const & result) -> bool
+  {
+    return std::holds_alternative<std::error_code>(result);
+  }
+
+  template<typename SuccessType>
   auto inline constexpr get_error(fallible<SuccessType> const & result) -> std::error_code
   {
     return std::get<std::error_code>(result);

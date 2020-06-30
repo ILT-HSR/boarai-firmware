@@ -16,6 +16,8 @@ namespace boarai::hardware
       : fmt_node{node_name, ros_namespace, options}
       , m_device{std::make_unique<bno055>("/dev/i2c-0")}
   {
+    auto orientation = m_device->euler_orientation();
+    log_info("Orientation == [ {}, {}, {} ]", orientation.heading, orientation.pitch, orientation.roll);
   }
 
 }  // namespace boarai::hardware
