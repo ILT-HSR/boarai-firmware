@@ -1,5 +1,7 @@
 #include "hmi/hmi.hpp"
 
+#include "mavlink/v2.0/common/common.hpp"
+#include "mavlink/v2.0/common/version.h"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "support/interfaces.hpp"

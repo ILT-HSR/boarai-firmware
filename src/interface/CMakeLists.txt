@@ -13,7 +13,7 @@ find_package("ament_cmake" REQUIRED)
 find_package("boarai_support" REQUIRED)
 find_package("rclcpp" REQUIRED)
 find_package("rclcpp_components" REQUIRED)
-
+find_package("mavlink" REQUIRED)
 
 #=== Testing Setup ===#
 
@@ -63,8 +63,13 @@ target_include_directories("hmi" PUBLIC
 
 ament_target_dependencies("hmi"
   "boarai_support"
+  "mavlink"
   "rclcpp"
   "rclcpp_components"
+)
+
+target_compile_options("hmi" PUBLIC
+  "-Wno-pedantic"
 )
 
 target_compile_features("hmi" PUBLIC
