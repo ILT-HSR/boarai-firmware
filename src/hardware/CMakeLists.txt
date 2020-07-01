@@ -6,6 +6,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake/Modules")
 
 include("ConanDependencies")
 include("CompilerWarnings")
+include("AddComposableNode")
 
 #=== System Dependencies ===#
 
@@ -114,18 +115,7 @@ set_target_properties("roboteq" PROPERTIES
 
 #=== tank_drive Node ===#
 
-add_library("tank_drive" SHARED
-  "src/tank_drive/tank_drive_parameter_enum.cpp"
-  "src/tank_drive/tank_drive_parameters.cpp"
-  "src/tank_drive/tank_drive_services.cpp"
-  "src/tank_drive/tank_drive_timers.cpp"
-  "src/tank_drive/tank_drive.cpp"
-)
-
-target_include_directories("tank_drive" PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
+add_composable_node("tank_drive")
 
 target_link_libraries("tank_drive"
   "modbuscpp"
@@ -133,90 +123,34 @@ target_link_libraries("tank_drive"
 )
 
 ament_target_dependencies("tank_drive"
-  "boarai_support"
-  "rclcpp"
-  "rclcpp_components"
   "sensor_msgs"
   "std_msgs"
 )
 
-target_compile_features("tank_drive" PUBLIC
-  "cxx_std_17"
-)
-
-set_target_properties("tank_drive" PROPERTIES
-  CXX_STANDARD_REQUIRED ON
-  CXX_EXTENSIONS OFF
-  INTERPROCEDURAL_OPTIMIZATION ON
-)
-
 #=== gps_provider Node ===#
 
-add_library("gps_provider" SHARED
-  "src/gps_provider/gps_provider.cpp"
-  "src/gps_provider/gpsd_client.cpp"
-)
-
-target_include_directories("gps_provider" PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
+add_composable_node("gps_provider")
 
 target_link_libraries("gps_provider"
   "PkgConfig::libgps"
 )
 
 ament_target_dependencies("gps_provider"
-  "boarai_support"
-  "rclcpp"
-  "rclcpp_components"
   "sensor_msgs"
   "std_msgs"
 )
 
-target_compile_features("gps_provider" PUBLIC
-  "cxx_std_17"
-)
-
-set_target_properties("gps_provider" PROPERTIES
-  CXX_STANDARD_REQUIRED ON
-  CXX_EXTENSIONS OFF
-  INTERPROCEDURAL_OPTIMIZATION ON
-)
-
 #=== imu Node ===#
 
-add_library("imu" SHARED
-  "src/imu/bno055.cpp"
-  "src/imu/i2c_device.cpp"
-  "src/imu/imu.cpp"
-)
-
-target_include_directories("imu" PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
+add_composable_node("imu")
 
 target_link_libraries("imu"
   "i2c"
 )
 
 ament_target_dependencies("imu"
-  "boarai_support"
-  "rclcpp"
-  "rclcpp_components"
   "sensor_msgs"
   "std_msgs"
-)
-
-target_compile_features("imu" PUBLIC
-  "cxx_std_17"
-)
-
-set_target_properties("imu" PROPERTIES
-  CXX_STANDARD_REQUIRED ON
-  CXX_EXTENSIONS OFF
-  INTERPROCEDURAL_OPTIMIZATION ON
 )
 
 #=== Package Installation ===#

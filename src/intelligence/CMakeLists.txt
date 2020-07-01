@@ -4,6 +4,7 @@ project("boarai_intelligence" LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake/Modules")
 
+include("AddComposableNode")
 include("ConanDependencies")
 include("CompilerWarnings")
 
@@ -25,34 +26,10 @@ endif()
 
 #=== mode_controller Node ===#
 
-add_library("mode_controller" SHARED
-  "src/mode_controller/mode_controller_mode_enum.cpp"
-  "src/mode_controller/mode_controller_services.cpp"
-  "src/mode_controller/mode_controller_subscriptions.cpp"
-  "src/mode_controller/mode_controller_timers.cpp"
-  "src/mode_controller/mode_controller.cpp"
-)
-
-target_include_directories("mode_controller" PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
+add_composable_node("mode_controller")
 
 ament_target_dependencies("mode_controller"
-  "boarai_support"
-  "rclcpp"
-  "rclcpp_components"
   "std_msgs"
-)
-
-target_compile_features("mode_controller" PUBLIC
-  "cxx_std_17"
-)
-
-set_target_properties("mode_controller" PROPERTIES
-  CXX_STANDARD_REQUIRED ON
-  CXX_EXTENSIONS OFF
-  INTERPROCEDURAL_OPTIMIZATION ON
 )
 
 #=== Package Installation ===#

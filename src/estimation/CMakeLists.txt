@@ -4,6 +4,7 @@ project("boarai_estimation" LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake/Modules")
 
+include("AddComposableNode")
 include("ConanDependencies")
 include("CompilerWarnings")
 
@@ -25,57 +26,11 @@ endif()
 
 #=== position_estimator Node ===#
 
-add_library("position_estimator" SHARED
-  "src/position_estimator/position_estimator.cpp"
-)
-
-target_include_directories("position_estimator" PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-ament_target_dependencies("position_estimator"
-  "boarai_support"
-  "rclcpp"
-  "rclcpp_components"
-)
-
-target_compile_features("position_estimator" PUBLIC
-  "cxx_std_17"
-)
-
-set_target_properties("position_estimator" PROPERTIES
-  CXX_STANDARD_REQUIRED ON
-  CXX_EXTENSIONS OFF
-  INTERPROCEDURAL_OPTIMIZATION ON
-)
+add_composable_node("position_estimator")
 
 #=== velocity_estimator Node ===#
 
-add_library("velocity_estimator" SHARED
-  "src/velocity_estimator/velocity_estimator.cpp"
-)
-
-target_include_directories("velocity_estimator" PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-ament_target_dependencies("velocity_estimator"
-  "boarai_support"
-  "rclcpp_components"
-  "rclcpp"
-)
-
-target_compile_features("velocity_estimator" PUBLIC
-  "cxx_std_17"
-)
-
-set_target_properties("velocity_estimator" PROPERTIES
-  CXX_STANDARD_REQUIRED ON
-  CXX_EXTENSIONS OFF
-  INTERPROCEDURAL_OPTIMIZATION ON
-)
+add_composable_node("velocity_estimator")
 
 #=== Package Installation ===#
 

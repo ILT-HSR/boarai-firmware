@@ -4,6 +4,7 @@ project("boarai_control" LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake/Modules")
 
+include("AddComposableNode")
 include("ConanDependencies")
 include("CompilerWarnings")
 
@@ -15,7 +16,6 @@ find_package("rclcpp" REQUIRED)
 find_package("rclcpp_components" REQUIRED)
 find_package("std_msgs" REQUIRED)
 
-
 #=== Testing Setup ===#
 
 if(BUILD_TESTING)
@@ -26,31 +26,10 @@ endif()
 
 #=== velocity_control Node ===#
 
-add_library("velocity_control" SHARED
-  "src/velocity_control/velocity_control.cpp"
-  "src/velocity_control/velocity_control_subscriptions.cpp"
-)
-
-target_include_directories("velocity_control" PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
+add_composable_node("velocity_control")
 
 ament_target_dependencies("velocity_control"
-  "boarai_support"
-  "rclcpp"
-  "rclcpp_components"
   "std_msgs"
-)
-
-target_compile_features("velocity_control" PUBLIC
-  "cxx_std_17"
-)
-
-set_target_properties("velocity_control" PROPERTIES
-  CXX_STANDARD_REQUIRED ON
-  CXX_EXTENSIONS OFF
-  INTERPROCEDURAL_OPTIMIZATION ON
 )
 
 #=== Package Installation ===#

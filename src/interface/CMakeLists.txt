@@ -4,6 +4,7 @@ project("boarai_interface" LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake/Modules")
 
+include("AddComposableNode")
 include("ConanDependencies")
 include("CompilerWarnings")
 
@@ -25,61 +26,18 @@ endif()
 
 #=== gamepad Node ===#
 
-add_library("gamepad" SHARED
-  "src/gamepad/gamepad.cpp"
-)
-
-target_include_directories("gamepad" PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-ament_target_dependencies("gamepad"
-  "boarai_support"
-  "rclcpp"
-  "rclcpp_components"
-)
-
-target_compile_features("gamepad" PUBLIC
-  "cxx_std_17"
-)
-
-set_target_properties("gamepad" PROPERTIES
-  CXX_STANDARD_REQUIRED ON
-  CXX_EXTENSIONS OFF
-  INTERPROCEDURAL_OPTIMIZATION ON
-)
+add_composable_node("gamepad")
 
 #=== hmi Node ===#
 
-add_library("hmi" SHARED
-  "src/hmi/hmi.cpp"
-)
-
-target_include_directories("hmi" PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
+add_composable_node("hmi")
 
 ament_target_dependencies("hmi"
-  "boarai_support"
   "mavlink"
-  "rclcpp"
-  "rclcpp_components"
 )
 
 target_compile_options("hmi" PUBLIC
   "-Wno-pedantic"
-)
-
-target_compile_features("hmi" PUBLIC
-  "cxx_std_17"
-)
-
-set_target_properties("hmi" PROPERTIES
-  CXX_STANDARD_REQUIRED ON
-  CXX_EXTENSIONS OFF
-  INTERPROCEDURAL_OPTIMIZATION ON
 )
 
 #=== Package Installation ===#
