@@ -19,9 +19,13 @@ function(add_composable_node NAME)
   set_target_properties("${NAME}" PROPERTIES
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
-    INTERPROCEDURAL_OPTIMIZATION ON
-    INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF
   )
+
+  if(BOARAI_ENABLE_IPO)
+    set_target_properties("${NAME}" PROPERTIES
+      INTERPROCEDURAL_OPTIMIZATION ON
+    )
+  endif()
 
   ament_target_dependencies("${NAME}"
     "boarai_support"
