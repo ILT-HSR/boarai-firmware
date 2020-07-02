@@ -66,6 +66,9 @@ namespace boarai
 
       using joystick_data_t = sensor_msgs::msg::Joy;
       auto constexpr joystick_data{"joystick_data"};
+
+      using imu_orientation_t = messages::EulerOrientation;
+      auto constexpr imu_orientation{"imu_orientation"};
     }  // namespace topic
 
     namespace limit

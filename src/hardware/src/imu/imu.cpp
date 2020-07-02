@@ -19,12 +19,12 @@ namespace boarai::hardware
     try
     {
       m_device = std::make_unique<bno055>("/dev/i2c-0");
-      auto orientation = m_device->euler_orientation();
-      log_info("Orientation == [ {}, {}, {} ]", orientation.heading, orientation.pitch, orientation.roll);
+      start_publishers();
+      start_timers();
     }
     catch (std::exception const & e)
     {
-      log_error("failed to connect to IMU! reason: {}", e.what());
+      log_error("Failed to initialize imu! reason: {0}", e.what());
     }
   }
 

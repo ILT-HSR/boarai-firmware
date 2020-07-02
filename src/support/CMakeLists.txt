@@ -62,6 +62,7 @@ ament_target_dependencies("support"
 rosidl_generate_interfaces("${PROJECT_NAME}"
   "msg/AngularVelocity.msg"
   "msg/AvailableModes.msg"
+  "msg/EulerOrientation.msg"
   "msg/GamepadControls.msg"
   "msg/LinearVelocity.msg"
   "msg/Polar2D.msg"
@@ -71,7 +72,7 @@ rosidl_generate_interfaces("${PROJECT_NAME}"
   "srv/SetDriveVelocity.srv"
   "srv/SetMode.srv"
   "srv/SetVelocity.srv"
-  DEPENDENCIES builtin_interfaces
+  DEPENDENCIES builtin_interfaces std_msgs
 )
 
 #=== boarAI Support Library Tests ===#
