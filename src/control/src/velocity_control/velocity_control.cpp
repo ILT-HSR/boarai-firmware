@@ -2,7 +2,6 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
-#include "rmw/qos_profiles.h"
 #include "support/interfaces.hpp"
 #include "support/string_utility.hpp"
 
@@ -14,29 +13,13 @@ namespace boarai::control
 {
   auto constexpr node_name{"velocity_control"};
 
-  // static const rmw_qos_profile_t rmw_qos_profile_services_default =
-  // {
-  //   RMW_QOS_POLICY_HISTORY_KEEP_LAST,
-  //   10,
-  //   RMW_QOS_POLICY_RELIABILITY_RELIABLE,
-  //   RMW_QOS_POLICY_DURABILITY_VOLATILE,
-  //   RMW_QOS_DEADLINE_DEFAULT,
-  //   RMW_QOS_LIFESPAN_DEFAULT,
-  //   RMW_QOS_POLICY_LIVELINESS_SYSTEM_DEFAULT,
-  //   RMW_QOS_LIVELINESS_LEASE_DURATION_DEFAULT,
-  //   false
-  // };
-
   velocity_control::velocity_control(rclcpp::NodeOptions const & options)
       : fmt_node{node_name, ros_namespace, options}
   {
     log_info("velocity_control starting up");
 
-    auto drive_velocity_policy = rmw_qos_profile_services_default;
-    drive_velocity_policy.depth = 1;
     m_drive_velocity_client = create_client<hardware::service::set_drive_velocity_t>(
-        join("/", hardware::ros_namespace, hardware::service::set_drive_velocity),
-        drive_velocity_policy);
+        join("/", hardware::ros_namespace, hardware::service::set_drive_velocity));
 
     start_subscriptions();
     start_services();
