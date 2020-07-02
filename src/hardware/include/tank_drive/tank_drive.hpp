@@ -18,9 +18,12 @@
 #include <modbuscpp/client.hpp>
 #include <modbuscpp/connection.hpp>
 
+#include <atomic>
 #include <cstdint>
+#include <mutex>
 #include <optional>
 #include <string>
+#include <thread>
 
 namespace boarai::hardware
 {
@@ -44,12 +47,14 @@ namespace boarai::hardware
     };
 
     explicit tank_drive(rclcpp::NodeOptions const & options);
+    ~tank_drive();
 
   private:
     auto declare_parameters() -> void;
     auto start_services() -> void;
     auto start_timers() -> void;
     auto start_publishers() -> void;
+    auto start_driver_worker() -> void;
     auto publish_limits() -> void;
 
     auto initialize_driver(std::string address, std::uint16_t port) -> void;
@@ -77,6 +82,8 @@ namespace boarai::hardware
     auto on_voltages_update_timer_expired() -> void;
     auto on_drive_velocity_update_timer_expired() -> void;
 
+    auto process_driver_command(boarai::messages::PolarVelocity velocity) -> void;
+
     rclcpp::Service<service::set_drive_velocity_t>::SharedPtr m_drive_velocity_service{};
     rclcpp::Service<service::get_maximum_angular_velocity_t>::SharedPtr m_angular_velocity_service{};
 
@@ -94,6 +101,11 @@ namespace boarai::hardware
     std::optional<modbus::connection> m_driver_connection{};
     std::optional<modbus::client> m_driver_client{};
     std::optional<roboteq::driver> m_motor_driver{};
+
+    std::optional<boarai::messages::PolarVelocity> m_requested_velocity{};
+    std::atomic_bool m_run_driver_worker{};
+    std::thread m_driver_worker{};
+    std::mutex m_command_mutex{};
   };
 
 }  // namespace boarai::hardware

@@ -5,6 +5,9 @@
 
 #include <cmath>
 #include <functional>
+#include <future>
+#include <mutex>
+#include <optional>
 
 using namespace std::placeholders;
 
@@ -21,26 +24,13 @@ namespace boarai::hardware
         service::get_maximum_angular_velocity,
         std::bind(&tank_drive::on_angular_velocity_request, this, _1, _2));
     // clang-format on
-  }
+  }  // namespace boarai::hardware
 
   auto tank_drive::on_drive_velocity_request(service::set_drive_velocity_t::Request::SharedPtr request,
                                              service::set_drive_velocity_t::Response::SharedPtr) -> void
   {
-    auto [linear_velocity, angular_velocity] = request->velocity.value;
-
-    auto throttle = static_cast<std::int32_t>(1000 / maximum_linear_velocity() * linear_velocity);
-    throttle = throttle < 0 ? std::max(throttle, -1000) : std::min(throttle, 1000);
-    log_info("determined throttle to be: {}", throttle);
-
-    auto steering = static_cast<std::int32_t>(1000 / maximum_angular_velocity() * angular_velocity);
-    steering = steering < 0 ? std::max(steering, -1000) : std::min(steering, 1000);
-    log_info("determined steering to be: {}", steering);
-
-    if (m_motor_driver)
-    {
-      m_motor_driver->set_motor_command(roboteq::channel::velocity, throttle);
-      m_motor_driver->set_motor_command(roboteq::channel::steering, steering);
-    }
+    auto guard = std::lock_guard{m_command_mutex};
+    m_requested_velocity = request->velocity;
   }
 
   auto tank_drive::on_angular_velocity_request(service::get_maximum_angular_velocity_t::Request::SharedPtr,
