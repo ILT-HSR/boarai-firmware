@@ -125,10 +125,10 @@ namespace boarai::hardware
 
   auto bno055::enter(operation_mode mode) -> std::error_code
   {
-    auto switch_result = write(device_register::operation_mode, static_cast<std::byte>(mode));
-    if (!switch_result)
+    auto switch_error = write(device_register::operation_mode, static_cast<std::byte>(mode));
+    if (switch_error)
     {
-      return switch_result;
+      return switch_error;
     }
     std::this_thread::sleep_for(mode == operation_mode::configuration ? switch_to_configuration_mode_duration
                                                                       : switch_from_configuration_mode_duration);
@@ -137,10 +137,10 @@ namespace boarai::hardware
 
   auto bno055::enter(power_mode mode) -> std::error_code
   {
-    auto switch_result = write(device_register::power_mode, static_cast<std::byte>(mode));
-    if (!switch_result)
+    auto switch_error = write(device_register::power_mode, static_cast<std::byte>(mode));
+    if (switch_error)
     {
-      return switch_result;
+      return switch_error;
     }
     return {};
   }
