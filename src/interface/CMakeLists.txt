@@ -2,18 +2,9 @@ cmake_minimum_required(VERSION "3.14.0")
 
 project("boarai_interface" LANGUAGES CXX)
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake/Modules")
-
-include("AddComposableNode")
-include("ConanDependencies")
-include("CompilerWarnings")
-
 #=== ROS2 Dependencies ===#
 
-find_package("ament_cmake" REQUIRED)
-find_package("boarai_support" REQUIRED)
-find_package("rclcpp" REQUIRED)
-find_package("rclcpp_components" REQUIRED)
+find_package("boarai_cmake" REQUIRED)
 find_package("mavlink" REQUIRED)
 
 #=== Testing Setup ===#
@@ -30,10 +21,8 @@ add_composable_node("gamepad")
 
 #=== hmi Node ===#
 
-add_composable_node("hmi")
-
-ament_target_dependencies("hmi"
-  "mavlink"
+add_composable_node("hmi"
+  ROS_DEPENDENCIES "mavlink"
 )
 
 target_compile_options("hmi" PUBLIC

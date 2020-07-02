@@ -2,10 +2,9 @@ cmake_minimum_required(VERSION "3.14.0")
 
 project("boarai_support" LANGUAGES CXX C)
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake/Modules")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../cmake/cmake")
 
 include("ConanDependencies")
-include("CompilerWarnings")
 
 #=== ROS2 Dependencies ===#
 
@@ -43,6 +42,13 @@ target_compile_features("support" PUBLIC
   "cxx_std_17"
 )
 
+target_compile_options("support" PRIVATE
+  "-Wall"
+  "-Wextra"
+  "-Werror"
+  "-pedantic-errors"
+)
+
 target_link_libraries("support"
   "CONAN_PKG::fmt"
 )
@@ -76,6 +82,13 @@ add_executable("support_unittests"
 
 target_include_directories("support_unittests" PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/test/include>
+)
+
+target_compile_options("support_unittests" PRIVATE
+  "-Wall"
+  "-Wextra"
+  "-Werror"
+  "-pedantic-errors"
 )
 
 target_link_libraries("support_unittests"

@@ -2,19 +2,9 @@ cmake_minimum_required(VERSION "3.14.0")
 
 project("boarai_intelligence" LANGUAGES CXX)
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake/Modules")
-
-include("AddComposableNode")
-include("ConanDependencies")
-include("CompilerWarnings")
-
 #=== ROS2 Dependencies ===#
 
-find_package("ament_cmake" REQUIRED)
-find_package("boarai_support" REQUIRED)
-find_package("rclcpp_components" REQUIRED)
-find_package("rclcpp" REQUIRED)
-find_package("std_msgs" REQUIRED)
+find_package("boarai_cmake" REQUIRED)
 
 #=== Testing Setup ===#
 
@@ -27,10 +17,6 @@ endif()
 #=== mode_controller Node ===#
 
 add_composable_node("mode_controller")
-
-ament_target_dependencies("mode_controller"
-  "std_msgs"
-)
 
 #=== Package Installation ===#
 

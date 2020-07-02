@@ -2,12 +2,6 @@ cmake_minimum_required(VERSION "3.14.0")
 
 project("boarai_hardware" LANGUAGES CXX)
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake/Modules")
-
-include("ConanDependencies")
-include("CompilerWarnings")
-include("AddComposableNode")
-
 #=== System Dependencies ===#
 
 find_package("PkgConfig" REQUIRED)
@@ -17,12 +11,8 @@ pkg_check_modules("libgps" REQUIRED IMPORTED_TARGET "libgps")
 
 #=== ROS2 Dependencies ===#
 
-find_package("ament_cmake" REQUIRED)
-find_package("boarai_support" REQUIRED)
-find_package("rclcpp_components" REQUIRED)
-find_package("rclcpp" REQUIRED)
+find_package("boarai_cmake" REQUIRED)
 find_package("sensor_msgs" REQUIRED)
-find_package("std_msgs" REQUIRED)
 
 #=== Testing Setup ===#
 
@@ -115,42 +105,33 @@ set_target_properties("roboteq" PROPERTIES
 
 #=== tank_drive Node ===#
 
-add_composable_node("tank_drive")
+add_composable_node("tank_drive"
+  ROS_DEPENDENCIES "sensor_msgs"
+)
 
 target_link_libraries("tank_drive"
   "modbuscpp"
   "roboteq"
 )
 
-ament_target_dependencies("tank_drive"
-  "sensor_msgs"
-  "std_msgs"
-)
-
 #=== gps_provider Node ===#
 
-add_composable_node("gps_provider")
+add_composable_node("gps_provider"
+  ROS_DEPENDENCIES "sensor_msgs"
+)
 
 target_link_libraries("gps_provider"
   "PkgConfig::libgps"
 )
 
-ament_target_dependencies("gps_provider"
-  "sensor_msgs"
-  "std_msgs"
-)
-
 #=== imu Node ===#
 
-add_composable_node("imu")
+add_composable_node("imu"
+  ROS_DEPENDENCIES "sensor_msgs"
+)
 
 target_link_libraries("imu"
   "i2c"
-)
-
-ament_target_dependencies("imu"
-  "sensor_msgs"
-  "std_msgs"
 )
 
 #=== Package Installation ===#

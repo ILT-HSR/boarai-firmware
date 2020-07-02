@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>boarai_interface</name>
+  <name>boarai_cmake</name>
 
   <version>0.1.0</version>
 
-  <description>boarAI Interface Layer</description>
+  <description>boarAI CMake Support</description>
 
   <maintainer email="felix.morgner@hsr.ch">Felix Morgner</maintainer>
   <maintainer email="sergio.miracco@hsr.ch">Sergio Miracco</maintainer>
@@ -18,17 +18,11 @@
   <license file="../../LICENSE">BSD-3-Clause</license>
 
   <url>https://github.com/ILT-HSR/boarai-firmware</url>
+  
+  <depend>ament_cmake</depend>
+  <depend>boarai_support</depend>
 
-  <buildtool_depend>boarai_cmake</buildtool_depend>
-
-  <build_depend>mavlink</build_depend>
-
-  <test_depend>ament_cmake_clang_format</test_depend>
   <test_depend>ament_cmake_lint_cmake</test_depend>
-  <test_depend>amend_cmake_xmllint</test_depend>
-
-  <exec_depend>joystick_ros2</exec_depend>
-  <exec_depend>mavlink</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
