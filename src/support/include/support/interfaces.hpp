@@ -37,10 +37,13 @@ namespace boarai
     {
       using estimated_velocity_t = messages::PolarVelocity;
       auto constexpr estimated_velocity{"estimated_velocity"};
-
-      using estimated_position_t = messages::Pose;
-      auto constexpr estimated_position{"estimated_position"};
     }  // namespace topic
+
+    namespace service
+    {
+      using get_estimated_position_t = services::GetEstimatedPosition;
+      auto constexpr get_estimated_position{"get_estimated_position"};
+    }  // namespace service
   }    // namespace estimation
 
   namespace hardware
