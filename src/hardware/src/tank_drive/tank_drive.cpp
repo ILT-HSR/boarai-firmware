@@ -80,8 +80,11 @@ namespace boarai::hardware
 
   tank_drive::~tank_drive()
   {
-    m_run_driver_worker = false;
-    m_driver_worker.join();
+    if (m_driver_worker.joinable())
+    {
+      m_run_driver_worker = false;
+      m_driver_worker.join();
+    }
   }
 
   auto tank_drive::start_driver_worker() -> void
