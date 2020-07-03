@@ -3,6 +3,7 @@
 
 #include <chrono>
 #include <functional>
+#include <stdexcept>
 
 using namespace std::chrono_literals;
 
@@ -16,12 +17,19 @@ namespace boarai::hardware
 
   auto imu::on_orientation_update_timer_expired() -> void
   {
-    auto orientation = m_device->euler_orientation();
-    auto message = topic::imu_orientation_t{};
-    message.yaw = orientation.heading / 16.0;
-    message.pitch = orientation.pitch / 16.0;
-    message.roll = orientation.roll / 16.0;
-    m_orientation_publisher->publish(message);
+    try
+    {
+      auto orientation = m_device->euler_orientation();
+      auto message = topic::imu_orientation_t{};
+      message.yaw = orientation.heading / 16.0;
+      message.pitch = orientation.pitch / 16.0;
+      message.roll = orientation.roll / 16.0;
+      m_orientation_publisher->publish(message);
+    }
+    catch (std::exception const & e)
+    {
+      log_error("Failed to read IMU! reason: {}", e.what());
+    }
   }
 
 }  // namespace boarai::hardware
