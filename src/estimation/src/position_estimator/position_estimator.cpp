@@ -14,6 +14,7 @@ namespace boarai::estimation
   {
     log_info("position_estimator starting up");
     start_services();
+    start_subscriptions();
   }
 
 }  // namespace boarai::estimation
