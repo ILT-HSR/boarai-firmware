@@ -30,9 +30,9 @@ namespace boarai::hardware
       auto message = topic::imu_orientation_t{};
       message.header.frame_id = "vehicle";
       message.header.stamp = m_clock->now();
-      message.yaw = orientation.heading / 16.0;
-      message.pitch = orientation.pitch / 16.0;
-      message.roll = orientation.roll / 16.0;
+      message.orientation.yaw = orientation.heading / 16.0;
+      message.orientation.pitch = orientation.pitch / 16.0;
+      message.orientation.roll = orientation.roll / 16.0;
       m_orientation_publisher->publish(message);
     }
     catch (std::exception const & e)

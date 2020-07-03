@@ -70,7 +70,7 @@ namespace boarai
       using joystick_data_t = sensor_msgs::msg::Joy;
       auto constexpr joystick_data{"joystick_data"};
 
-      using imu_orientation_t = messages::EulerOrientation;
+      using imu_orientation_t = messages::EulerOrientationStamped;
       auto constexpr imu_orientation{"imu_orientation"};
     }  // namespace topic
 
