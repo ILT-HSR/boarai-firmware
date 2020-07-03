@@ -67,12 +67,13 @@ rosidl_generate_interfaces("${PROJECT_NAME}"
   "msg/LinearVelocity.msg"
   "msg/Polar2D.msg"
   "msg/PolarVelocity.msg"
+  "msg/Pose.msg"
   "msg/Voltage.msg"
   "srv/GetMaximumAngularVelocity.srv"
   "srv/SetDriveVelocity.srv"
   "srv/SetMode.srv"
   "srv/SetVelocity.srv"
-  DEPENDENCIES builtin_interfaces std_msgs
+  DEPENDENCIES builtin_interfaces std_msgs sensor_msgs
 )
 
 #=== boarAI Support Library Tests ===#

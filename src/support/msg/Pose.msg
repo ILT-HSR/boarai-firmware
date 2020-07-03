@@ -1,0 +1,2 @@
+sensor_msgs/NavSatFix position
+boarai_support/EulerOrientation orientation
