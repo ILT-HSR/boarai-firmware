@@ -19,14 +19,14 @@ namespace boarai::estimation
     explicit position_estimator(rclcpp::NodeOptions const & options);
 
   private:
-    auto start_services();
-    auto start_subscriptions();
+    auto start_services() -> void;
+    auto start_subscriptions() -> void;
 
     auto on_estimated_position_request(service::get_estimated_position_t::Request::SharedPtr request,
                                        service::get_estimated_position_t::Response::SharedPtr response) -> void;
 
-    auto on_global_position_update(hardware::topic::global_position_t::SharedPtr new_position);
-    auto on_imu_orientation_update(hardware::topic::imu_orientation_t::SharedPtr new_orientation);
+    auto on_global_position_update(hardware::topic::global_position_t::SharedPtr new_position) -> void;
+    auto on_imu_orientation_update(hardware::topic::imu_orientation_t::SharedPtr new_orientation) -> void;
 
     rclcpp::Service<service::get_estimated_position_t>::SharedPtr m_get_estimated_position_service{};
 

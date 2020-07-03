@@ -13,6 +13,7 @@ namespace boarai::estimation
       : fmt_node{node_name, ros_namespace, options}
   {
     log_info("position_estimator starting up");
+    start_services();
   }
 
 }  // namespace boarai::estimation
