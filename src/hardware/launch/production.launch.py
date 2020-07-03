@@ -54,7 +54,7 @@ def generate_launch_description() -> launch.LaunchDescription:
         node_name='container',
         node_namespace='/boarai/hardware',
         package='rclcpp_components',
-        node_executable='component_container',
+        node_executable='component_container_mt',
         composable_node_descriptions=[
             GPS_PROVIDER,
             TANK_DRIVE,
