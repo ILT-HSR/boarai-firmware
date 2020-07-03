@@ -36,6 +36,10 @@ namespace boarai::hardware
 
     auto on_orientation_update_timer_expired() -> void;
 
+    rclcpp::TimeSource m_time_source;
+    rclcpp::Clock::SharedPtr m_clock;
+    bool m_time_source_initialized;
+
     rclcpp::TimerBase::SharedPtr m_orientation_update_timer{};
 
     rclcpp::Publisher<topic::imu_orientation_t>::SharedPtr m_orientation_publisher{};
