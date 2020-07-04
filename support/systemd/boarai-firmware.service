@@ -1,0 +1,9 @@
+[Unit]
+Description=boarAI Firmware
+
+[Service]
+ExecStart=/home/hsr/code/firmware/run-firmware.sh
+Type=simple
+
+[Install]
+WantedBy=default.target
