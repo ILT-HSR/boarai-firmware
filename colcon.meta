@@ -1,46 +1,23 @@
-{
-    "names": {
-        "boarai": {
-            "cmake-args": [
-                "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-                "-DCMAKE_BUILD_TYPE=Release"
-            ]
-        },
-        "boarai_control": {
-            "cmake-args": [
-                "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-                "-DCMAKE_BUILD_TYPE=Release"
-            ]
-        },
-        "boarai_estimation": {
-            "cmake-args": [
-                "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-                "-DCMAKE_BUILD_TYPE=Release"
-            ]
-        },
-        "boarai_hardware": {
-            "cmake-args": [
-                "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-                "-DCMAKE_BUILD_TYPE=Release"
-            ]
-        },
-        "boarai_intelligence": {
-            "cmake-args": [
-                "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-                "-DCMAKE_BUILD_TYPE=Release"
-            ]
-        },
-        "boarai_interface": {
-            "cmake-args": [
-                "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-                "-DCMAKE_BUILD_TYPE=Release"
-            ]
-        },
-        "boarai_support": {
-            "cmake-args": [
-                "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-                "-DCMAKE_BUILD_TYPE=Release"
-            ]
-        },
-    }
-}
+default-cmake-args: &_default_cmake_args
+  cmake-args:
+    - "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+    - "-DCMAKE_BUILD_TYPE=Release"
+    - "-DBOARAI_ENABLE_IPO=YES"
+
+names:
+  boarai:
+    <<: *_default_cmake_args
+  boarai_control:
+    <<: *_default_cmake_args
+  boarai_estimation:
+    <<: *_default_cmake_args
+  boarai_hardware:
+    <<: *_default_cmake_args
+  boarai_intelligence:
+    <<: *_default_cmake_args
+  boarai_interface:
+    <<: *_default_cmake_args
+  boarai_support:
+    <<: *_default_cmake_args
+  third_party
+    <<: *_default_cmake_args
