@@ -19,5 +19,5 @@ names:
     <<: *_default_cmake_args
   boarai_support:
     <<: *_default_cmake_args
-  third_party
+  third_party:
     <<: *_default_cmake_args
