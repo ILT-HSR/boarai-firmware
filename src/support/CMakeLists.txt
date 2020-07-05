@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION "3.14.0")
 
 project("boarai_support" LANGUAGES CXX C)
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../cmake/cmake")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
 include("ConanDependencies")
 
@@ -110,6 +110,10 @@ install(DIRECTORY "include/support"
   DESTINATION "include"
 )
 
+install(DIRECTORY "cmake/Modules/"
+  DESTINATION "share/${PROJECT_NAME}/cmake"
+)
+
 install(TARGETS "support"
   EXPORT "boarai_support"
   ARCHIVE DESTINATION "lib"
@@ -125,9 +129,15 @@ install(DIRECTORY
 
 #=== Ament Packaging ===#
 
-ament_export_dependencies("rosidl_default_runtime" "std_msgs" "sensor_msgs")
+ament_export_dependencies(
+  "rclcpp_components"
+  "rclcpp"
+  "rosidl_default_runtime"
+  "sensor_msgs"
+  "std_msgs"
+)
 ament_export_include_directories("include" ${CONAN_INCLUDE_DIRS_FMT})
 ament_export_interfaces("boarai_support")
 ament_export_libraries("support")
 
-ament_package()
+ament_package(CONFIG_EXTRAS "cmake/boarai_support-extras.cmake")

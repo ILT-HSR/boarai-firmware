@@ -11,8 +11,7 @@ pkg_check_modules("libgps" REQUIRED IMPORTED_TARGET "libgps")
 
 #=== ROS2 Dependencies ===#
 
-find_package("boarai_cmake" REQUIRED)
-find_package("sensor_msgs" REQUIRED)
+find_package("boarai_support" REQUIRED)
 
 #=== Testing Setup ===#
 

@@ -4,7 +4,7 @@ project("boarai_interface" LANGUAGES CXX)
 
 #=== ROS2 Dependencies ===#
 
-find_package("boarai_cmake" REQUIRED)
+find_package("boarai_support" REQUIRED)
 find_package("mavlink" REQUIRED)
 
 #=== Testing Setup ===#

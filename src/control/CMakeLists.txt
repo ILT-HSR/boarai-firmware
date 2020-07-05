@@ -4,8 +4,7 @@ project("boarai_control" LANGUAGES CXX)
 
 #=== ROS2 Dependencies ===#
 
-find_package("boarai_cmake" REQUIRED)
-find_package("std_msgs" REQUIRED)
+find_package("boarai_support" REQUIRED)
 
 #=== Testing Setup ===#
 
