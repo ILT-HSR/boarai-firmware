@@ -1,8 +1,8 @@
 file(GLOB CONANFILE RELATIVE "${PROJECT_SOURCE_DIR}" CONFIGURE_DEPENDS "conanfile.txt")
 
 if(CONANFILE)
-  if(EXISTS "${boarai_cmake_DIR}/conan.cmake")
-    include("${boarai_cmake_DIR}/conan.cmake")
+  if(EXISTS "${boarai_support_DIR}/conan.cmake")
+    include("${boarai_support_DIR}/conan.cmake")
   else()
     include("conan")
   endif()
