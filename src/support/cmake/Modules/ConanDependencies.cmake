@@ -8,6 +8,8 @@ if(CONANFILE)
   endif()
   conan_check(REQUIRED)
   conan_add_remote(NAME bincrafters URL "https://api.bintray.com/conan/bincrafters/public-conan")
+  conan_add_remote(NAME fmorgner URL "https://api.bintray.com/conan/fmorgner/conan-public")
+  conan_add_remote(NAME joakimono URL "https://api.bintray.com/conan/joakimono/conan")
   conan_cmake_run(CONANFILE "conanfile.txt"
     BASIC_SETUP
     CMAKE_TARGETS
