@@ -1,5 +1,5 @@
-#ifndef BOARAI_HARDWARE_TANK_DRIVE_HPP
-#define BOARAI_HARDWARE_TANK_DRIVE_HPP
+#ifndef BOARAI_HARDWARE_DEBUG_TANK_DRIVE_HPP
+#define BOARAI_HARDWARE_DEBUG_TANK_DRIVE_HPP
 
 #include "rclcpp/node_options.hpp"
 #include "rclcpp/publisher.hpp"
