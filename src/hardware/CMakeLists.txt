@@ -113,6 +113,12 @@ target_link_libraries("tank_drive"
   "roboteq"
 )
 
+#=== tank_drive_debug Node ===#
+
+add_composable_node("tank_drive_debug"
+  ROS_DEPENDENCIES "sensor_msgs"
+)
+
 #=== gps_provider Node ===#
 
 add_composable_node("gps_provider"
@@ -142,6 +148,7 @@ install(TARGETS
 
   # nodes
   "tank_drive"
+  "tank_drive_debug"
   "gps_provider"
   "imu"
 
@@ -160,6 +167,7 @@ install(DIRECTORY
 #=== Ament Packaging ===#
 
 rclcpp_components_register_nodes("tank_drive" "boarai::hardware::tank_drive")
+rclcpp_components_register_nodes("tank_drive_debug" "boarai::hardware::tank_drive_debug")
 rclcpp_components_register_nodes("gps_provider" "boarai::hardware::gps_provider")
 rclcpp_components_register_nodes("imu" "boarai::hardware::imu")
 

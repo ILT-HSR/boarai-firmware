@@ -31,6 +31,17 @@ TANK_DRIVE: ComposableNode = ComposableNode(
     }]
 )
 
+TANK_DRIVE: ComposableNode = ComposableNode(
+    package='boarai_hardware',
+    node_plugin='boarai::hardware::tank_drive_debug',
+    node_name='tank_drive_debug',
+    parameters=[{
+        "wheel_spacing": 0.51,
+        "maximum_linear_velocity": 2.9,
+        "acceleration_delay": 0.1,
+    }]
+)
+
 GAMEPAD: Node = Node(
     node_name='gamepad',
     node_namespace='/boarai/hardware',
