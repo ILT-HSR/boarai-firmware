@@ -6,6 +6,8 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-18.04
+    container:
+      image: ubuntu:bionic
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
@@ -23,7 +25,8 @@ jobs:
         with:
           required-ros-distributions: eloquent
       - name: Build Firmware
-        run: |
-          source /opt/ros/eloquent/setup.bash
-          colcon build --symlink-install
+        uses: ros-tooling/action-ros-ci@0.0.19
+        with:
+          package-name: boarai
+          target-ros2-distro: eloquent
 ...
