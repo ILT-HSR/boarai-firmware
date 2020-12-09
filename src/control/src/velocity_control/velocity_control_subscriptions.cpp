@@ -20,7 +20,7 @@ namespace boarai::control
   auto velocity_control::on_estimated_velocity_update(estimation::topic::estimated_velocity_t::SharedPtr new_velocity) -> void
   {
     auto [linear_velocity, angular_velocity] = new_velocity->value;
-    log_info("new estimated velocity: linear = {:.2f} || angular = {:.2f}", linear_velocity, angular_velocity);
+    log_debug("new estimated velocity: linear = {:.2f} || angular = {:.2f}", linear_velocity, angular_velocity);
   }
 
 }  // namespace boarai::control
