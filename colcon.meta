@@ -3,6 +3,7 @@ default-cmake-args: &_default_cmake_args
     - "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
     - "-DCMAKE_BUILD_TYPE=Release"
     - "-DBOARAI_ENABLE_IPO=YES"
+    - "-Wno-dev"
 
 names:
   boarai:
