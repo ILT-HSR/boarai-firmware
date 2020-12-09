@@ -12,7 +12,7 @@ namespace boarai::hardware
 {
   namespace
   {
-    auto constexpr node_name{"tank_drive_debug"};
+    auto constexpr node_name{"tank_drive"};
 
     auto const angular_velocity_limit_topic{join("/", ros_limit_namespace, join("_", limit::angular_velocity, node_name))};
     auto const linear_velocity_limit_topic{join("/", ros_limit_namespace, join("_", limit::linear_velocity, node_name))};
