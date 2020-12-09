@@ -1,47 +1,55 @@
-import launch.actions
-
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-
-
-CONTROL_LAYER = launch.actions.IncludeLaunchDescription(
-    launch.launch_description_sources.PythonLaunchDescriptionSource(
-        get_package_share_directory('boarai_control') + '/launch/production.launch.py'
-    )
-)
-
-ESTIMATION_LAYER = launch.actions.IncludeLaunchDescription(
-    launch.launch_description_sources.PythonLaunchDescriptionSource(
-        get_package_share_directory('boarai_estimation') + '/launch/production.launch.py'
-    )
-)
-
-HARDWARE_LAYER = launch.actions.IncludeLaunchDescription(
-    launch.launch_description_sources.PythonLaunchDescriptionSource(
-        get_package_share_directory('boarai_hardware') + '/launch/production.launch.py'
-    )
-)
-
-INTERFACE_LAYER = launch.actions.IncludeLaunchDescription(
-    launch.launch_description_sources.PythonLaunchDescriptionSource(
-        get_package_share_directory('boarai_interface') + '/launch/production.launch.py'
-    )
-)
-
-INTELLIGENCE_LAYER = launch.actions.IncludeLaunchDescription(
-    launch.launch_description_sources.PythonLaunchDescriptionSource(
-        get_package_share_directory('boarai_intelligence') + '/launch/production.launch.py'
-    )
-)
+from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
-    return LaunchDescription([
-        CONTROL_LAYER,
-        ESTIMATION_LAYER,
-        HARDWARE_LAYER,
-        INTERFACE_LAYER,
-        INTELLIGENCE_LAYER,
-    ])
+
+    fake_drive = DeclareLaunchArgument(
+        name="fake_tank_drive",
+        default_value="False",
+        description="Run with the faked boarai::hardware::tank_drive node",
+    )
+
+    return LaunchDescription(
+        [
+            # Arguments
+            fake_drive,
+            # Sub-launch files
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    get_package_share_directory("boarai_control")
+                    + "/launch/production.launch.py"
+                )
+            ),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    get_package_share_directory("boarai_estimation")
+                    + "/launch/production.launch.py"
+                )
+            ),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    get_package_share_directory("boarai_hardware")
+                    + "/launch/production.launch.py"
+                ),
+                launch_arguments={
+                    "fake_tank_drive": LaunchConfiguration("fake_tank_drive"),
+                }.items(),
+            ),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    get_package_share_directory("boarai_interface")
+                    + "/launch/production.launch.py"
+                )
+            ),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    get_package_share_directory("boarai_intelligence")
+                    + "/launch/production.launch.py"
+                )
+            ),
+        ]
+    )
