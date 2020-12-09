@@ -20,19 +20,6 @@ IMU: ComposableNode = ComposableNode(
 
 TANK_DRIVE: ComposableNode = ComposableNode(
     package='boarai_hardware',
-    node_plugin='boarai::hardware::tank_drive',
-    node_name='tank_drive',
-    parameters=[{
-        "driver_enabled": True,
-        "driver_address": "192.168.1.20",
-        "driver_port": 502,
-        "wheel_spacing": 0.51,
-        "maximum_linear_velocity": 2.9,
-    }]
-)
-
-TANK_DRIVE: ComposableNode = ComposableNode(
-    package='boarai_hardware',
     node_plugin='boarai::hardware::tank_drive_debug',
     node_name='tank_drive_debug',
     parameters=[{
