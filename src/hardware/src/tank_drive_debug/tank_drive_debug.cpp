@@ -21,6 +21,7 @@ namespace boarai::hardware
   tank_drive_debug::tank_drive_debug(rclcpp::NodeOptions const & options)
       : fmt_node{node_name, ros_namespace, options}
   {
+    declare_parameters();
     start_services();
     start_publishers();
     start_timers();
